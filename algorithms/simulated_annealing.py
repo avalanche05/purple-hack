@@ -27,7 +27,7 @@ class SimulatedAnnealing:
                 annealed_tasks_to_resourses[second_id], annealed_tasks_to_resourses[first_id]
 
             annealed_ans = combined_cost_fn(...)
-            if annealed_ans > ans or random.uniform(0, 1) < math.exp((annealed_ans - ans) / temp):
+            if annealed_ans > ans or random.uniform(0, 1) < math.exp((annealed_ans - ans) / self.temp):
                 tasks_to_resourses = annealed_tasks_to_resourses
                 ans = annealed_ans
 
