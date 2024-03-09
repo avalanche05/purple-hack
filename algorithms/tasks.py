@@ -22,16 +22,19 @@ def assign_time(task_ids: list, task_user: dict, graph: dict = {}) -> list[dict]
         task: dict = parsed_data["tasks"][task_id]
         effort_time = task["effort"]
         user_id = task_user[task_id]
-        start_date = user_time[user_id]
+
         duration = 0
 
         blocker_ids = graph.get(task_id, [])
-        print(task_ids)
-        print(blocker_ids)
-        pprint(graph)
-        for blocker_id in blocker_ids:
-            user_time[user_id] = max(user_time[user_id], parsed_data["tasks"][blocker_id]["end_date"])
-
+        try:
+            for blocker_id in blocker_ids:
+                user_time[user_id] = max(user_time[user_id], parsed_data["tasks"][blocker_id]["end_date"])
+        except Exception:
+            print("!!!")
+            print(task_ids)
+            print(blocker_ids)
+            pprint(graph)
+        start_date = user_time[user_id]
         while effort_time > 0:
             hours = get_user_hour(task_id, user_time[user_id].strftime("%Y-%m-%d"))
             effort_time -= hours
@@ -48,5 +51,6 @@ def assign_time(task_ids: list, task_user: dict, graph: dict = {}) -> list[dict]
                 "duration": duration,
             }
         )
+        parsed_data["tasks"][task_id] = task
         res.append(task)
     return res

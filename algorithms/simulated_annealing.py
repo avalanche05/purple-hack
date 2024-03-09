@@ -26,7 +26,6 @@ class SimulatedAnnealing:
     def predict_sequence(self, tasks_to_resources):
         task_sequence = top_sort.task_sequence
         blockers = top_sort.blokers
-        print(blockers)
         assigned_time_list = assign_time(task_sequence, tasks_to_resources, blockers)
         ans = self.cost_fn(assigned_time_list)
 
@@ -35,11 +34,12 @@ class SimulatedAnnealing:
             first_id = random.randint(0, len(task_sequence) - 1)
             second_id = random.randint(0, len(task_sequence) - 1)
 
-            if top_sort.can_swap(task_sequence[first_id], task_sequence[second_id]):
+            if top_sort.can_swap(task_sequence[first_id], task_sequence[second_id], first_id, second_id, task_sequence):
                 annealed_task_sequence = task_sequence.copy()
                 annealed_task_sequence[first_id], annealed_task_sequence[second_id] = annealed_task_sequence[second_id], \
                     annealed_task_sequence[first_id]
-                annealed_assigned_time_list = assign_time(annealed_task_sequence, tasks_to_resources)
+                print(task_sequence[first_id], task_sequence[second_id])
+                annealed_assigned_time_list = assign_time(annealed_task_sequence, tasks_to_resources, blockers)
                 annealed_ans = self.cost_fn(annealed_assigned_time_list)
 
                 if annealed_ans < ans or random.uniform(0, 1) < math.exp((annealed_ans - ans) / self.temp):
@@ -70,9 +70,8 @@ class SimulatedAnnealing:
 
             annealed_ans, annealed_assigned_time_list = sequence_simulated_annealing.predict_sequence(
                 annealed_tasks_to_resources)
-
-            if annealed_ans < ans or random.uniform(0, 1) < math.exp((annealed_ans - ans) / self.temp):
+            # print(annealed_ans)
+            if annealed_ans < ans or random.uniform(0, 1) < math.exp(min(709, (annealed_ans - ans) / self.temp)):
                 tasks_to_resources = annealed_tasks_to_resources
                 ans, task_sequence = annealed_ans, annealed_assigned_time_list
-
         return ans, assigned_time_list

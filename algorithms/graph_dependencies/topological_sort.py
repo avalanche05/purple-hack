@@ -40,8 +40,18 @@ class TopSort:
     def is_parent(self, upper_vertex: str, lower_vertex: str) -> bool:
         return self.tin[upper_vertex] <= self.tin[lower_vertex] and self.tout[upper_vertex] >= self.tout[lower_vertex]
 
-    def can_swap(self, upper_vertex: str, lower_vertex: str) -> bool:
-        return not self.is_parent(upper_vertex, lower_vertex)
+    def can_swap(self, upper_vertex: str, lower_vertex: str, upper_idx: int, lower_idx: int, task_sequence: list) -> bool:
+        res = True
+        for i in range(upper_idx):
+            res &= not self.is_parent(upper_vertex, task_sequence[i])
+        for i in range(upper_idx + 1, len(task_sequence)):
+            res &= not self.is_parent(task_sequence[i], upper_vertex)
+
+        for i in range(lower_idx):
+            res &= not self.is_parent(lower_vertex, task_sequence[i])
+        for i in range(lower_idx + 1, len(task_sequence)):
+            res &= not self.is_parent(task_sequence[i], lower_vertex)
+        return not self.is_parent(lower_vertex, lower_vertex)
 
 
 top_sort = TopSort(data_lists)
