@@ -1,5 +1,6 @@
-from typing import Callable, Dict, Any
+from typing import Callable, Dict, Any, List
 import random
+from data_matching_functions import create_project_role_ids, match_task_id_to_resourse_id
 
 
 class RandomizedSearch:
@@ -9,27 +10,23 @@ class RandomizedSearch:
         self.cost_fn = cost_fn
         self.num_iterations = num_iterations
     
-    def fit(self):
+    def fit(self, *args) -> None:
         pass
 
-    def predict(self, data: Dict[str, Any]):
+    def predict(self, data: Dict[str, Any]) -> Dict[str, List[str]]:
+        tasks_by_project_roles = create_project_role_ids(data)
+        tasks_to_resourses = match_task_id_to_resourse_id(data, tasks_by_project_roles)
 
-        resource_ids = data["resource_id"]
-        task_ids = data["task_id"]
-
-        best_combination = None
-        best_cost = float("inf")
+        best_combination = tasks_to_resourses
+        best_cost = self.cost_fn(...)
 
         for _ in range(self.num_iterations):
-            random.shuffle(task_ids)
             
-            resource_task_pairs = list(zip(resource_ids, task_ids))
-
-            ...
+            curr_tasks2res = match_task_id_to_resourse_id(data, tasks_by_project_roles)
             current_cost = self.cost_fn()
 
             if current_cost < best_cost:
-                best_combination = resource_task_pairs
+                best_combination = curr_tasks2res
                 best_cost = current_cost
         
         return best_combination
