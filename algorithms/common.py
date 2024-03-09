@@ -2,8 +2,10 @@ from collections import defaultdict
 from datetime import datetime
 import json
 
+from .parser import get_data
+
 raw_data: dict = json.load(open("../исх.json"))
-data = dict()
+data = get_data()
 
 default_calendar = defaultdict(lambda: 8)
 week_days = []

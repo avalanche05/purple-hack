@@ -10,9 +10,9 @@ def get_user_hour(user_id: str, date: str):
 
 def assign_time(task_ids: list, task_user: dict) -> list[dict]:
     res = []
-    start_date = datetime.strptime(data["start_date"], "%Y-%m-%d")
+    init_date = datetime.strptime(data["start_date"], "%Y-%m-%d")
     step = timedelta(days=1)
-    user_time = defaultdict(lambda: start_date)
+    user_time = defaultdict(lambda: init_date)
 
     for task_id in task_ids:
         task: dict = data["tasks"][task_id]
