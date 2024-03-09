@@ -25,7 +25,8 @@ class SimulatedAnnealing:
 
     def predict_sequence(self, tasks_to_resources):
         task_sequence = top_sort.task_sequence
-        assigned_time_list = assign_time(task_sequence, tasks_to_resources)
+        graph = top_sort.graph
+        assigned_time_list = assign_time(task_sequence, tasks_to_resources, graph)
         ans = self.cost_fn(assigned_time_list)
 
         for i in range(self.num_iterations):
