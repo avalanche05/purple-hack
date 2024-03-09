@@ -2,6 +2,8 @@ import random
 
 
 def create_project_role_ids(data) -> dict:
+    """For each project_role create a list of tasks_ids with this project_role"""
+
     tasks_by_project_roles = {}
     for task in data.get("tasks"):
         project_role = task.get("project_role_id")
@@ -13,12 +15,14 @@ def create_project_role_ids(data) -> dict:
     return tasks_by_project_roles
 
 
-def match_task_id_to_resourse_id(data, tasks_by_project_roles):
+def match_task_id_to_resourse_id(data, tasks_by_project_roles) -> dict:
+    """Randomly assign resourse_id to each task_id based on project_role"""
+
     for project_role_id, project_role_id_list in tasks_by_project_roles.items():
         random.shuffle(project_role_id_list)
 
     last_ids = dict(zip(tasks_by_project_roles.keys(), [0] * len(tasks_by_project_roles)))
-    tasks_to_resourses = {}  # {"task_id": "resourse_id"}
+    tasks_to_resourses = {}
 
     for task in data.get("tasks"):
         project_role_id = task.get("project_role_id")
