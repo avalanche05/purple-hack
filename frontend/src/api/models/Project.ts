@@ -1,3 +1,5 @@
+import { RcFile } from 'antd/es/upload';
+
 export interface CalendarInterval {
     recurrentStartDate: string | null;
     recurrentEndDate: string | null;
@@ -116,4 +118,9 @@ export interface ProjectInfo {
     timeRanges: Rows<unknown>;
     keyResults: Rows<unknown>;
     accountingObject: AccountingObject;
+}
+
+export interface UploadProjectFileParams {
+    file: RcFile;
+    priority: string;
 }
