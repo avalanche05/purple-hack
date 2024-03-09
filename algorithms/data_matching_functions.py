@@ -1,10 +1,11 @@
+from typing import Dict, List, Any
 import random
 
 
-def create_project_role_ids(data) -> dict:
+def create_project_role_ids(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, List[str]]:
     """For each project_role create a list of tasks_ids with this project_role"""
 
-    tasks_by_project_roles = {}
+    tasks_by_project_roles: Dict[str, List[str]] = {}
     for task in data.get("tasks"):
         project_role = task.get("project_role_id")
         if project_role not in tasks_by_project_roles:
@@ -15,7 +16,8 @@ def create_project_role_ids(data) -> dict:
     return tasks_by_project_roles
 
 
-def match_task_id_to_resourse_id(data, tasks_by_project_roles) -> dict:
+def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
+                                 tasks_by_project_roles: Dict[str, List[str]]) -> Dict[str, List[str]]:
     """Randomly assign resourse_id to each task_id based on project_role"""
 
     for project_role_id, project_role_id_list in tasks_by_project_roles.items():
