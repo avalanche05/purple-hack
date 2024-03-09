@@ -1,26 +1,58 @@
-from typing import Callable, Union
+from datetime import timedelta, datetime
+from typing import Callable, Union, List, Dict, Any
+from common import data
 
 
 Number = Union[float, int]
 
 
-def cost_len_fn(args) -> Number:
-    pass
+def count_working_days(start_date: datetime, end_date: datetime) -> int:
+    current_date = start_date
+    working_days = 0
+
+    while current_date <= end_date:
+        if current_date.weekday() < 5:
+            working_days += 1
+        current_date += timedelta(days=1)
+
+    return working_days
 
 
-def cost_resource_fn(args) -> Number:
-    pass
+def cost_len_fn(infos: List[Dict[str, Any]]) -> int:
+    total_cost = 0
 
-
-def cost_fn(args) -> Number:
-    pass
-
-
-def combined_cost_fn(fn1: Callable,
-                     fn2: Callable,
-                     fn3: Callable) -> Callable:
+    for info in infos:
+        start_date = info["start_date"]
+        end_date = info["end_date"]
+        total_cost += count_working_days(start_date, end_date)
     
-    def _fn(args):
-        return 0.5 * fn1(args) + 0.3 * fn2(args) + 0.2 * fn3(args)
+    return total_cost
+
+
+def cost_resource_fn(infos: List[Dict[str, Any]]) -> int:
+    resourses = set()
+
+    for info in infos:
+        resourses.add(info["resource_id"])
+    
+    return len(resourses)
+
+
+def cost_fn(infos: List[Dict[str, Any]]) -> Number:
+    total_cost = 0
+
+    for task in infos:
+        resource_id = task["resource_id"]
+        total_cost += task["effort"] * data["resources"][resource_id]
+    
+    return total_cost
+
+
+def combined_cost_fn(fn1: Callable[[List[Dict[str, Any]]], int],
+                     fn2: Callable[[List[Dict[str, Any]]], int],
+                     fn3: Callable[[List[Dict[str, Any]]], int]) -> Callable[[List[Dict[str, Any]]], int]:
+    
+    def _fn(infos: List[Dict[str, Any]]) -> int:
+        return 0.5 * fn1(infos) + 0.3 * fn2(infos) + 0.2 * fn3(infos)
     
     return _fn
