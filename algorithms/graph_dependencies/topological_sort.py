@@ -10,6 +10,7 @@ class TopSort:
         self.tin = {}
         self.tout = {}
         self.time = 0
+        self.blokers = {}
         self.top_sort()
 
     def dfs(self, vertex: str, par: str) -> None:
@@ -19,6 +20,11 @@ class TopSort:
 
         for to in self.graph.get(vertex, []):
             if to != par:
+                if to not in self.blokers:
+                    self.blokers[to] = [vertex]
+                else:
+                    self.blokers[to].append(vertex)
+
                 self.dfs(to, vertex)
 
         self.tout[vertex] = self.time
