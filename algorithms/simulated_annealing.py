@@ -66,16 +66,11 @@ class SimulatedAnnealing:
             annealed_tasks_to_resources[first_id], annealed_tasks_to_resources[second_id] = \
                 annealed_tasks_to_resources[second_id], annealed_tasks_to_resources[first_id]
 
-            annealed_ans, annealed_assigned_time_list = sequence_simulated_annealing.predict_sequence(annealed_tasks_to_resources)
+            annealed_ans, annealed_assigned_time_list = sequence_simulated_annealing.predict_sequence(
+                annealed_tasks_to_resources)
 
             if annealed_ans < ans or random.uniform(0, 1) < math.exp((annealed_ans - ans) / self.temp):
                 tasks_to_resources = annealed_tasks_to_resources
                 ans, task_sequence = annealed_ans, annealed_assigned_time_list
 
         return ans, assigned_time_list
-
-
-if __name__ == "__main__":
-    simulated_annealing = SimulatedAnnealing(cost_len_fn, 1.0, 0.99, 1000)
-    ans, assigned_time_list = simulated_annealing.predict_resource(data_lists)
-    print(ans, assigned_time_list)

@@ -19,8 +19,12 @@ def assign_time(task_ids: list, task_user: dict) -> list[dict]:
         effort_time = task["effort"]
         user_id = task_user[task_id]
         start_date = user_time[user_id]
+        duration = 0
         while effort_time > 0:
-            effort_time -= get_user_hour(task_id, user_time[user_id].strftime("%Y-%m-%d"))
+            hours = get_user_hour(task_id, user_time[user_id].strftime("%Y-%m-%d"))
+            effort_time -= hours
+            if hours:
+                duration += 1
             user_time[user_id] += step
         end_date = user_time[user_id]
         task.update(
@@ -29,6 +33,7 @@ def assign_time(task_ids: list, task_user: dict) -> list[dict]:
                 "end_date": end_date,
                 "resource_id": user_id,
                 "resource_price": data["resources"][user_id]["price"],
+                "duration": duration,
             }
         )
         res.append(task)
