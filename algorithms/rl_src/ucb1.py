@@ -6,6 +6,7 @@ class UCB:
         self.M = n_arms
         self.c = np.zeros(n_arms, dtype=int) # counter (the number of times each acrm was played)
         self.v = np.zeros(n_arms) # average reward obtained from playing the arms
+        self.eps = 1e-6
     
     def select_arm(self):
         for arm in range(self.M):
@@ -15,7 +16,7 @@ class UCB:
         u = np.zeros(self.M)
         c = self.c.sum()
 
-        bonus = np.sqrt((2 * np.log(c)) / self.c)
+        bonus = np.sqrt((2 * np.log(c)) / (self.c + self.eps))
         u = self.v + bonus
         return u.argmax()
     
