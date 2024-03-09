@@ -43,7 +43,7 @@ const Home = observer(() => {
                         </Link>
                     </Col>
                 </Header>
-                <Content style={{ padding: '0 50px' }}>
+                <Content style={{ padding: '0 50px 50px 50px' }}>
                     <Row>
                         <Col>
                             <Typography.Title level={2}>Загрузка файла</Typography.Title>
@@ -55,7 +55,7 @@ const Home = observer(() => {
                             <Upload
                                 name='file'
                                 beforeUpload={(file) => {
-                                    rootStore.uplaodFile(file);
+                                    rootStore.uploadFile(file);
 
                                     return false;
                                 }}
@@ -77,6 +77,37 @@ const Home = observer(() => {
                             </Row>
 
                             <Gantt tasks={rootStore.uploadedGanttTasks} viewMode={ViewMode.Week} />
+
+                            <Row>
+                                <Typography.Title level={2}>Расчет</Typography.Title>
+                            </Row>
+
+                            <Row>
+                                <Col>
+                                    <Button
+                                        type='primary'
+                                        size='large'
+                                        onClick={() => rootStore.calculate()}
+                                        disabled={!rootStore.file}
+                                        loading={rootStore.loading}
+                                    >
+                                        {rootStore.loading ? 'Файл обрабатывается' : 'Расчитать'}
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </>
+                    )}
+
+                    {rootStore.calculatedGanttTasks && (
+                        <>
+                            <Row style={{ marginTop: 20 }}>
+                                <Typography.Title level={2}>График после расчета</Typography.Title>
+                            </Row>
+
+                            <Gantt
+                                tasks={rootStore.calculatedGanttTasks}
+                                viewMode={ViewMode.Week}
+                            />
                         </>
                     )}
                 </Content>
