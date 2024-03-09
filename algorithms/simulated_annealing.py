@@ -11,6 +11,9 @@ class SimulatedAnnealing:
                  num_iterations: int):
         self.temp = temp
         self.num_iterations = num_iterations
+    
+    def fit(self, *args) -> None:
+        pass
 
     def predict(self, data):
         tasks_by_project_roles = create_project_role_ids(data)
