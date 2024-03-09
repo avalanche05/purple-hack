@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from .graph import create_graph, get_roots
 from ..common import data_lists
 
