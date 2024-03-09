@@ -4,8 +4,9 @@ import json
 
 from .parser import get_data
 
-raw_data: dict = json.load(open("../исх.json"))
+raw_data: dict = json.load(open("исх.json"))
 data = get_data()
+data_lists = json.load(open("var2.json"))
 
 default_calendar = defaultdict(lambda: 8)
 week_days = []

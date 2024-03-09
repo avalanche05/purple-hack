@@ -24,7 +24,7 @@ def get_tasks(data: list) -> list:
     return result
 
 
-def get_data(is_dict=True) -> Any[dict, list]:
+def get_data(is_dict=True) -> dict | list:
     tasks = dict()
     users = dict()
     dependencies = dict()

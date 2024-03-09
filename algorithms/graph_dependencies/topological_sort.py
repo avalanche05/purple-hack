@@ -1,4 +1,7 @@
-from graph import create_graph, get_roots
+from pprint import pprint
+
+from .graph import create_graph, get_roots
+from ..common import data_lists
 
 
 class TopSort:
@@ -9,6 +12,7 @@ class TopSort:
         self.tin = {}
         self.tout = {}
         self.time = 0
+        self.top_sort()
 
     def dfs(self, vertex: str, par: str) -> None:
         self.tin[vertex] = self.time
@@ -35,3 +39,5 @@ class TopSort:
     def can_swap(self, upper_vertex: str, lower_vertex: str) -> bool:
         return not self.is_parent(upper_vertex, lower_vertex)
 
+
+top_sort = TopSort(data_lists)

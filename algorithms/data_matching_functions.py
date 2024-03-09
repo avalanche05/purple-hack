@@ -2,11 +2,11 @@ from typing import Dict, List, Any
 import random
 
 
-def create_project_role_ids(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, List[str]]:
+def create_project_role_ids(resources: List[Dict[str, Any]]) -> Dict[str, List[str]]:
     """For each project_role create a list of resourse_ids with this project_role"""
 
     resources_by_project_roles: Dict[str, List[str]] = {}
-    for resource in data.get("resources"):
+    for resource in resources:
         project_role = resource.get("project_role_id")
         if project_role not in resources_by_project_roles:
             resources_by_project_roles[project_role] = [resource.get("id")]
