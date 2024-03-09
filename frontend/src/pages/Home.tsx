@@ -1,11 +1,11 @@
-import { Button, Col, Layout, Upload } from 'antd';
+import { Button, Col, Layout, Row, Typography, Upload } from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import { Link } from 'react-router-dom';
 import { LogoutOutlined, UploadOutlined } from '@ant-design/icons';
 import AuthService from '../api/AuthService';
 import { useStores } from '../hooks/useStores';
 import { observer } from 'mobx-react-lite';
-import { Gantt } from 'gantt-task-react';
+import { Gantt, ViewMode } from 'gantt-task-react';
 import 'gantt-task-react/dist/index.css';
 
 const Home = observer(() => {
@@ -44,19 +44,41 @@ const Home = observer(() => {
                     </Col>
                 </Header>
                 <Content style={{ padding: '0 50px' }}>
-                    <Upload
-                        name='file'
-                        beforeUpload={(file) => {
-                            rootStore.uplaodFile(file);
+                    <Row>
+                        <Col>
+                            <Typography.Title level={2}>Загрузка файла</Typography.Title>
+                        </Col>
+                    </Row>
 
-                            return false;
-                        }}
-                        accept='.json'
-                    >
-                        <Button icon={<UploadOutlined />}>Загрузить JSON</Button>
-                    </Upload>
+                    <Row>
+                        <Col>
+                            <Upload
+                                name='file'
+                                beforeUpload={(file) => {
+                                    rootStore.uplaodFile(file);
 
-                    {rootStore.ganttTasks && <Gantt tasks={rootStore.ganttTasks} />}
+                                    return false;
+                                }}
+                                accept='.json'
+                                multiple={false}
+                                maxCount={1}
+                            >
+                                <Button icon={<UploadOutlined />}>Загрузить JSON</Button>
+                            </Upload>
+                        </Col>
+                    </Row>
+
+                    {rootStore.uploadedGanttTasks && (
+                        <>
+                            <Row style={{ marginTop: 20 }}>
+                                <Typography.Title level={2}>
+                                    График из загруженного файла
+                                </Typography.Title>
+                            </Row>
+
+                            <Gantt tasks={rootStore.uploadedGanttTasks} viewMode={ViewMode.Week} />
+                        </>
+                    )}
                 </Content>
             </Layout>
         </>
