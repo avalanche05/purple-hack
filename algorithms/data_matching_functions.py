@@ -16,12 +16,8 @@ def create_project_role_ids(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, 
     return tasks_by_project_roles
 
 
-<<<<<<< HEAD
-def match_task_id_to_resource_id(data, tasks_by_project_roles) -> dict:
-=======
 def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
-                                 tasks_by_project_roles: Dict[str, List[str]]) -> Dict[str, List[str]]:
->>>>>>> 7fb1985129c0c7e307a68c76831a3f5c8299fa68
+                                 tasks_by_project_roles: Dict[str, List[str]]) -> Dict[str, str]:
     """Randomly assign resourse_id to each task_id based on project_role"""
 
     for project_role_id, project_role_id_list in tasks_by_project_roles.items():
@@ -33,7 +29,7 @@ def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
     for task in data.get("tasks"):
         project_role_id = task.get("project_role_id")
         last_id = last_ids.get(project_role_id)
-        tasks_to_resources[task["id"]] = tasks_by_project_roles[last_id]
+        tasks_to_resources[task["id"]] = tasks_by_project_roles[project_role_id][last_id]
         if last_id == len(tasks_by_project_roles.get(project_role_id)):
             random.shuffle(tasks_by_project_roles[project_role_id])
             last_ids["project_role_id"] = 0
