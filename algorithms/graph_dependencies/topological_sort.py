@@ -5,14 +5,14 @@ class TopSort:
     def __init__(self, data):
         self.graph = create_graph(data.get("dependencies"))
         self.roots = get_roots(self.graph, data.get("dependencies"))
-        self.tin = [0] * len(self.graph)
-        self.tout = [0] * len(self.graph)
+        self.tin = {}
+        self.tout = {}
         self.time = 0
 
     def dfs(self, vertex, par):
         self.tin[vertex] = self.time
         self.time += 1
-        for to in self.graph[vertex]:
+        for to in self.graph.get(vertex, []):
             if to != par:
                 self.dfs(to, vertex)
 
