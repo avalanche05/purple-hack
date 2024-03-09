@@ -1,159 +1,85 @@
-import { makeAutoObservable, observable, runInAction } from "mobx";
-import { CreateSprintBody, SprintI, Ticket } from "../api/models";
-import { TicketApiServiceInstanse } from "../api/TicketApiService";
+import { RcFile } from 'antd/es/upload';
+import { makeAutoObservable } from 'mobx';
+import { Dependency, ProjectInfo, ProjectTask } from '../api/models/Project';
+import { Task } from 'gantt-task-react';
 
 export class RootStore {
-    public trigger: boolean = false;
-    public tickets: Ticket[] = [];
-    public ticketsByUserRole: Ticket[] = [];
-    public sprint: SprintI | null = null;
-    public isDeleteTicketAvailable: boolean = false;
-    public isAddTicketAvailable: boolean = false;
-    public activeSprintUserIndex: number = 0;
+    projectInfo: ProjectInfo | null = null;
+    ganttTasks: Task[] | null = null;
 
     constructor() {
-        makeAutoObservable(this, {
-            trigger: observable,
-            tickets: observable,
-            ticketsByUserRole: observable,
-            sprint: observable,
-            isAddTicketAvailable: observable,
-            isDeleteTicketAvailable: observable,
-            activeSprintUserIndex: observable,
-        });
+        makeAutoObservable(this);
     }
 
-    public setTrigger() {
-        runInAction(() => {
-            this.trigger = !this.trigger;
-        });
+    uplaodFile(file: RcFile) {
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                try {
+                    const parsedData = JSON.parse(reader.result as string);
+                    this.projectInfo = parsedData;
+
+                    if (this.projectInfo) {
+                        this.ganttTasks = this.addDependenciesToTasks(
+                            this.mapProjectInfoToTasks(this.projectInfo.tasks.rows),
+                            this.projectInfo.dependencies.rows
+                        );
+
+                        console.log('Gantt tasks:', this.ganttTasks);
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                }
+            };
+
+            reader.readAsText(file);
+        }
     }
 
-    public setTickets(tickets: Ticket[]) {
-        runInAction(() => {
-            this.tickets = tickets;
-        });
-    }
+    mapProjectInfoToTasks(tasks: ProjectTask[]): Task[] {
+        const mappedTasks: Task[] = [];
 
-    public setTicketsByUserRole(tickets: Ticket[]) {
-        runInAction(() => {
-            this.ticketsByUserRole = tickets;
-        });
-    }
-
-    public setActiveSprintUserIndex(activeSprintUserIndex: number) {
-        runInAction(() => {
-            this.activeSprintUserIndex = activeSprintUserIndex;
-        });
-    }
-
-    public setIsDeleteTicketAvailable(isDeleteTicketAvailable: boolean) {
-        runInAction(() => {
-            this.isDeleteTicketAvailable = isDeleteTicketAvailable;
-        });
-    }
-
-    public setIsAddTicketAvailable(isAddTicketAvailable: boolean) {
-        runInAction(() => {
-            this.isAddTicketAvailable = isAddTicketAvailable;
-        });
-    }
-
-    public addTicketToSprintByUser(
-        sprintUserIndex: number,
-        ticketIndex: number,
-        ticket: Ticket,
-    ) {
-        console.log(sprintUserIndex, ticketIndex);
-
-        runInAction(() => {
-            this.sprint?.users[sprintUserIndex].tickets.push(ticket);
-            // remove ticket from tickets
-            this.tickets.splice(ticketIndex, 1);
-            console.log(this.tickets);
-        });
-    }
-
-    public async getTickets() {
-        const tickets = await TicketApiServiceInstanse.getTickets();
-
-        runInAction(() => {
-            this.tickets = tickets;
+        tasks.forEach((task) => {
+            // Check if the task has children
+            if (task.children && task.children.length > 0) {
+                // Recursively call the function for each child
+                const mappedChildren = this.mapProjectInfoToTasks(task.children);
+                // Add the children to the mappedTasks array
+                mappedTasks.push(...mappedChildren);
+            } else {
+                // If the task has no children, add it to the mappedTasks array
+                mappedTasks.push({
+                    id: task.id,
+                    type: 'task', // or "milestone" or "project" based on your logic
+                    name: task.name,
+                    start: new Date(task.startDate),
+                    end: new Date(task.endDate),
+                    progress: task.percentDone,
+                    isDisabled: task.inactive,
+                    project: task.parentId,
+                    dependencies: [],
+                    hideChildren: false,
+                });
+            }
         });
 
-        return tickets;
+        return mappedTasks;
     }
 
-    public async getTicketsByUserRole(roleId: number) {
-        const tickets = await TicketApiServiceInstanse.getTicketByRole(roleId);
-
-        runInAction(() => {
-            this.ticketsByUserRole = tickets;
+    addDependenciesToTasks(tasks: Task[], dependencies: Dependency[]): Task[] {
+        tasks.forEach((task) => {
+            const taskDependencies = dependencies.filter(
+                (dependency) => dependency.from === task.id
+            );
+            taskDependencies.forEach((dependency) => {
+                const dependentTask = tasks.find((t) => t.id === dependency.to);
+                if (dependentTask) {
+                    task.dependencies?.push(dependentTask.id);
+                }
+            });
         });
 
-        return tickets;
-    }
-
-    public async changeTicketDuration(
-        ticketId: number,
-        body: { duration: number },
-    ): Promise<void> {
-        const response = await TicketApiServiceInstanse.changeTicketDuration(
-            ticketId,
-            body,
-        ).finally(() => {
-            this.getTickets();
-            // this.getTicketsByUserRole(12);
-        });
-
-        return response;
-    }
-
-    public async createSprint(body: CreateSprintBody): Promise<SprintI> {
-        const response = await TicketApiServiceInstanse.createSprint(
-            body,
-        ).finally(() => {
-            this.getTickets();
-            this.getTicketsByUserRole(1);
-        });
-
-        runInAction(() => {
-            this.sprint = response;
-        });
-
-        return response;
-    }
-
-    public async getAllUsers() {
-        const response = await TicketApiServiceInstanse.getAllUsers();
-
-        return response;
-    }
-
-    public async getLatestSprint(): Promise<SprintI> {
-        const response = await TicketApiServiceInstanse.getLatestSprint();
-
-        runInAction(() => {
-            this.sprint = response;
-        });
-
-        return response;
-    }
-
-    public async updateSprint(body: SprintI): Promise<SprintI> {
-        const response = await TicketApiServiceInstanse.updateSprint(body);
-
-        return response;
-    }
-
-    public async importTickets(): Promise<void> {
-        const response = await TicketApiServiceInstanse.importTickets().finally(
-            () => {
-                this.getTickets();
-                this.getTicketsByUserRole(1);
-            },
-        );
-
-        return response;
+        return tasks;
     }
 }
