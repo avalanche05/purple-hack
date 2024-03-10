@@ -14,18 +14,5 @@ services:
             context: ./backend
             dockerfile: Dockerfile
         restart: always
-        env_file:
-            - ./backend/.env
-        depends_on:
-            - db
         ports:
             - "9999:9999"
-    db:
-        image: postgres:15
-        env_file:
-            - ./backend/.env
-        restart: always
-        volumes:
-            - ./data:/var/lib/postgresql/data
-        ports:
-            - "5432:5432"
