@@ -97,6 +97,20 @@ const Home = observer(() => {
                                 tasks={rootStore.calculatedGanttTasks}
                                 title='График после расчета'
                             />
+
+                            <Row>
+                                <Col>
+                                    <Button
+                                        onClick={() => {
+                                            rootStore.downloadFile();
+                                        }}
+                                        type='primary'
+                                        size='large'
+                                    >
+                                        Загрузить JSON
+                                    </Button>
+                                </Col>
+                            </Row>
                         </>
                     )}
                 </Content>
