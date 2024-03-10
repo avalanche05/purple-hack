@@ -8,7 +8,8 @@ import { TasksApiServiceInstanse } from '../api/TasksApiService';
 export class RootStore {
     loading: boolean = false;
     file: RcFile | null = null;
-    projectInfo: ProjectInfo | null = null;
+    uploadedProjectInfo: ProjectInfo | null = null;
+    calculatedProjectInfo: ProjectInfo | null = null;
     uploadedGanttTasks: Task[] | null = null;
     calculatedGanttTasks: Task[] | null = null;
 
@@ -23,11 +24,11 @@ export class RootStore {
             reader.onload = () => {
                 try {
                     const parsedData = JSON.parse(reader.result as string);
-                    this.projectInfo = parsedData;
+                    this.uploadedProjectInfo = parsedData;
                     this.file = file;
 
-                    if (this.projectInfo) {
-                        this.uploadedGanttTasks = this.mapToTasksPipeline(this.projectInfo);
+                    if (this.uploadedProjectInfo) {
+                        this.uploadedGanttTasks = this.mapToTasksPipeline(this.uploadedProjectInfo);
                     }
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
@@ -115,6 +116,8 @@ export class RootStore {
 
         TasksApiServiceInstanse.calculate({ file: this.file as RcFile, priority: 'PRICE' })
             .then((data) => {
+                this.calculatedProjectInfo = data;
+
                 this.calculatedGanttTasks = this.mapToTasksPipeline(data);
 
                 message.success('Файл успешно обработан');
@@ -135,5 +138,49 @@ export class RootStore {
             ),
             projectInfo.assignments.rows as Assignment[]
         );
+    }
+
+    getProjectCost(projectInfo: ProjectInfo): number {
+        let totalCost = 0;
+
+        const tasks = this.getAllLeafTasksRecursively(projectInfo.tasks.rows);
+
+        const taskToResourceMap = this.getTaskToResourcesMap(projectInfo);
+
+        tasks.forEach((task) => {
+            const resource = projectInfo.resources.rows.find(
+                (resource) => resource.id === taskToResourceMap.get(task.id)
+            );
+
+            if (resource) {
+                totalCost += task.effort * +resource.name.match(/(?<=\()\d+/g)![0];
+            }
+        });
+
+        return totalCost;
+    }
+
+    private getTaskToResourcesMap(projectInfo: ProjectInfo): Map<string, string> {
+        const taskToResourceMap = new Map<string, string>();
+
+        projectInfo.assignments.rows.forEach((assignment) => {
+            taskToResourceMap.set(assignment.event, assignment.resource);
+        });
+
+        return taskToResourceMap;
+    }
+
+    private getAllLeafTasksRecursively(tasks: ProjectTask[]): ProjectTask[] {
+        const leafTasks: ProjectTask[] = [];
+
+        tasks.forEach((task) => {
+            if (task.children && task.children.length > 0) {
+                leafTasks.push(...this.getAllLeafTasksRecursively(task.children));
+            } else {
+                leafTasks.push(task);
+            }
+        });
+
+        return leafTasks;
     }
 }
