@@ -4,6 +4,12 @@
 data/
 jsons/
 tmp.ipynb
+var2.json
+исх.json
+bandits_playground.ipynb
+bandits_playground.py
+result.json
+tmp.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
