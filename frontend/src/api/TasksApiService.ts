@@ -11,7 +11,7 @@ class TasksApiService {
     }: UploadProjectFileParams): Promise<ProjectInfo> {
         const formData = new FormData();
 
-        formData.append('file', file);
+        formData.append('json_file', file);
 
         const response = await axios.post<ProjectInfo>(`${API_URL}/calculate`, formData, {
             params: { duration, price, resource },

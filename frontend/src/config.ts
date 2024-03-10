@@ -1,1 +1,1 @@
-export const API_URL = 'api.dino-misis.ru';
+export const API_URL = 'https://api.dino-misis.ru';
