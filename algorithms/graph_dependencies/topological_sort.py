@@ -5,6 +5,8 @@ from ..common import data_lists
 
 class TopSort:
     def __init__(self, data: dict):
+        if not data:
+            return
         self.graph = create_graph(data.get("dependencies"))
         self.roots = get_roots(self.graph, data.get("dependencies"))
         self.task_sequence = []
@@ -34,7 +36,6 @@ class TopSort:
     def top_sort(self) -> None:
         for root in self.roots:
             self.dfs(root, "-1")
-        print(self.task_sequence)
 
     def gen_sequence(self) -> list:
         return self.task_sequence
@@ -71,4 +72,8 @@ class TopSort:
         return sequence
 
 
-top_sort = TopSort(data_lists)
+top_sort = TopSort({})
+
+
+def init():
+    top_sort.__init__(data_lists)

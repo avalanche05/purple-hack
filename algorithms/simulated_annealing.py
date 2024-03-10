@@ -50,12 +50,12 @@ class SimulatedAnnealing:
 
         return ans, assigned_time_list
 
-    def predict_resource(self, data):
+    def predict_resource(self, data, optimize_type="time"):
         resources_by_project_roles = create_project_role_ids(data.get("resources"))
-        tasks_to_resources = match_task_id_to_resourse_id(data, resources_by_project_roles)
+        tasks_to_resources = match_task_id_to_resourse_id(data, resources_by_project_roles, optimize_type)
         tasks_by_project_roles = create_project_role_ids(data.get("tasks"))
         project_roles = list(tasks_by_project_roles.keys())
-        sequence_simulated_annealing = SimulatedAnnealing(self.cost_fn, 1.0, 0.99, self.num_iterations)
+        sequence_simulated_annealing = SimulatedAnnealing(self.cost_fn, 1.0, 0.99, 1000)
         ans, assigned_time_list = sequence_simulated_annealing.predict_sequence(tasks_to_resources)
 
         for i in range(self.num_iterations):

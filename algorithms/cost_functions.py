@@ -60,12 +60,21 @@ def cost_fn(infos: List[Dict[str, Any]]) -> Number:
 
 def combined_cost_fn(fn1: Callable[[List[Dict[str, Any]]], int],
                      fn2: Callable[[List[Dict[str, Any]]], int],
-                     fn3: Callable[[List[Dict[str, Any]]], int]) -> Callable[[List[Dict[str, Any]]], Number]:
+                     fn3: Callable[[List[Dict[str, Any]]], int],
+                     k1: float,
+                     k2: float,
+                     k3: float,
+                     ) -> Callable[[List[Dict[str, Any]]], Number]:
     def _fn(infos: List[Dict[str, Any]]) -> Number:
-        return 0.5 * fn1(infos) / normalized_values[0] + 0.3 * fn2(infos) / normalized_values[1] + \
-            0.2 * fn3(infos) / normalized_values[2]
+        return k1 * fn1(infos) / normalized_values[0] + k2 * fn2(infos) / normalized_values[1] + \
+            k3 * fn3(infos) / normalized_values[2]
 
     return _fn
 
 
-normalized_values = calculate_normalized_values(get_base_assign_time(data))
+normalized_values = []
+
+
+def init():
+    normalized_values.clear()
+    normalized_values.extend(calculate_normalized_values(get_base_assign_time(data)))

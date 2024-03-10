@@ -1,30 +1,38 @@
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from copy import deepcopy
 
 from .parser import get_data
 
-raw_data: dict = json.load(open("исх.json"))
-data = get_data()
-data_lists = get_data(is_dict=False)
+print("IN COMMON")
 
+raw_data = dict()
+data = dict()
+data_lists = dict()
 default_calendar = defaultdict(lambda: 8)
-week_days = []
-for calendar in raw_data["calendars"]["rows"]:
-    if calendar["id"] == "general":
-        week_days = calendar["intervals"]
+calendar = defaultdict(lambda: default_calendar)
 
-for day in week_days:
-    if day["startDate"] is None:
-        continue
-    date = datetime.strptime(day["startDate"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
-    if default_calendar[date] in [0, 8]:
-        if day["isWorking"]:
-            default_calendar[date] = 7
-        else:
-            default_calendar[date] = 0
-calendar: dict[str, dict[str, int]] = defaultdict(lambda: default_calendar)
+
+def init(init_data: dict):
+    raw_data.update(init_data)
+    data.update(get_data())
+    data_lists.update(get_data(is_dict=False))
+
+    week_days = []
+    for calendar_row in raw_data["calendars"]["rows"]:
+        if calendar_row["id"] == "general":
+            week_days = calendar_row["intervals"]
+
+    for day in week_days:
+        if day["startDate"] is None:
+            continue
+        date = datetime.strptime(day["startDate"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+        if default_calendar[date] in [0, 8]:
+            if day["isWorking"]:
+                default_calendar[date] = 7
+            else:
+                default_calendar[date] = 0
 
 
 def get_output(tasks: list[dict]):
@@ -37,13 +45,19 @@ def get_output(tasks: list[dict]):
                 cur_start, cur_end = change_tasks(task["children"])
                 task["startDate"] = cur_start.strftime("%Y-%m-%dT%H:%M:%S")
                 task["endDate"] = cur_end.strftime("%Y-%m-%dT%H:%M:%S")
-                task["duration"] = (cur_start - cur_end).days
+                duration = 0
+
                 if start_date is None:
                     start_date = cur_start
                 if end_date is None:
                     end_date = cur_end
                 start_date = min(start_date, cur_start)
                 end_date = max(end_date, cur_end)
+                while cur_start < cur_end:
+                    if default_calendar[cur_start.strftime("%Y-%m-%d")] > 0 and start_date.weekday() < 5:
+                        duration += 1
+                    cur_start += timedelta(days=1)
+                task["duration"] = duration
             else:
                 new_task = tasks[task["id"]]
                 if start_date is None:
