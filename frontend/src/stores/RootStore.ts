@@ -1,6 +1,6 @@
 import { RcFile } from 'antd/es/upload';
 import { makeAutoObservable } from 'mobx';
-import { Dependency, ProjectInfo, ProjectTask } from '../api/models/Project';
+import { Assignment, Dependency, ProjectInfo, ProjectTask, Resource } from '../api/models/Project';
 import { Task } from 'gantt-task-react';
 import { message } from 'antd';
 import { TasksApiServiceInstanse } from '../api/TasksApiService';
@@ -27,10 +27,7 @@ export class RootStore {
                     this.file = file;
 
                     if (this.projectInfo) {
-                        this.uploadedGanttTasks = this.addDependenciesToTasks(
-                            this.mapProjectInfoToTasks(this.projectInfo.tasks.rows),
-                            this.projectInfo.dependencies.rows
-                        );
+                        this.uploadedGanttTasks = this.mapToTasksPipeline(this.projectInfo);
                     }
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
@@ -95,6 +92,22 @@ export class RootStore {
         return tasks;
     }
 
+    addResoursesToTasks(tasks: Task[], assignments: Assignment[]): Task[] {
+        tasks.forEach((task) => {
+            const taskAssigments = assignments.filter((assignment) => assignment.event === task.id);
+
+            taskAssigments.forEach((assigment) => {
+                const task = tasks.find((t) => t.id === assigment.event);
+
+                if (task) {
+                    task.name += ` (${assigment.resource.slice(-4)})`;
+                }
+            });
+        });
+
+        return tasks;
+    }
+
     async calculate() {
         this.loading = true;
 
@@ -102,10 +115,7 @@ export class RootStore {
 
         TasksApiServiceInstanse.calculate({ file: this.file as RcFile, priority: 'PRICE' })
             .then((data) => {
-                this.calculatedGanttTasks = this.addDependenciesToTasks(
-                    this.mapProjectInfoToTasks(data?.tasks.rows),
-                    this.projectInfo?.dependencies.rows as Dependency[]
-                );
+                this.calculatedGanttTasks = this.mapToTasksPipeline(data);
 
                 message.success('Файл успешно обработан');
             })
@@ -115,5 +125,15 @@ export class RootStore {
             .finally(() => {
                 this.loading = false;
             });
+    }
+
+    private mapToTasksPipeline(projectInfo: ProjectInfo): Task[] {
+        return this.addResoursesToTasks(
+            this.addDependenciesToTasks(
+                this.mapProjectInfoToTasks(projectInfo.tasks.rows),
+                projectInfo.dependencies.rows as Dependency[]
+            ),
+            projectInfo.assignments.rows as Assignment[]
+        );
     }
 }
