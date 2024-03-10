@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query, UploadFile, File
 from ..utils.calculate import process_json
 import json
 
-router = APIRouter(prefix="/ticket", tags=["ticket"])
+router = APIRouter()
 
 
 @router.post("/calculate")
