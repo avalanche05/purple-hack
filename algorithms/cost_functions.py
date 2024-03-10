@@ -1,8 +1,18 @@
 from datetime import timedelta, datetime
 from typing import Callable, Union, List, Dict, Any
 from .common import data
+from .normalize_functions import get_base_data
 
 Number = Union[float, int]
+
+
+def calculate_normalized_values(base_assign_time: List[Dict[str, Any]]) -> list:
+    print("base", base_assign_time)
+    normalized_values = [cost_len_fn(base_assign_time), cost_resource_fn(base_assign_time),
+                         cost_fn(base_assign_time)]
+    print(normalized_values)
+
+    return normalized_values
 
 
 def count_working_days(start_date: datetime, end_date: datetime) -> int:
@@ -50,8 +60,12 @@ def cost_fn(infos: List[Dict[str, Any]]) -> Number:
 
 def combined_cost_fn(fn1: Callable[[List[Dict[str, Any]]], int],
                      fn2: Callable[[List[Dict[str, Any]]], int],
-                     fn3: Callable[[List[Dict[str, Any]]], int]) -> Callable[[List[Dict[str, Any]]], int]:
-    def _fn(infos: List[Dict[str, Any]]) -> int:
-        return 0.5 * fn1(infos) + 0.3 * fn2(infos) + 0.2 * fn3(infos)
+                     fn3: Callable[[List[Dict[str, Any]]], int]) -> Callable[[List[Dict[str, Any]]], Number]:
+    def _fn(infos: List[Dict[str, Any]]) -> Number:
+        return 0.5 * fn1(infos) / normalized_values[0] + 0.3 * fn2(infos) / normalized_values[1] + \
+            0.2 * fn3(infos) / normalized_values[2]
 
     return _fn
+
+
+normalized_values = calculate_normalized_values(get_base_data(data))
