@@ -14,4 +14,4 @@ async def calculate_tasks(
 ):
     content = await json_file.read()
 
-    return process_json(json.loads(content.decode("utf-8")))
+    return process_json(json.loads(content.decode("utf-8")), duration, price, resource)

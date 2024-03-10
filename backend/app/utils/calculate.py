@@ -4,7 +4,6 @@ from algorithms.simulated_annealing import SimulatedAnnealing
 from algorithms.graph_dependencies import topological_sort
 from algorithms import cost_functions
 
-
 def process_json(data: dict, duration: float, price: float, resource: float) -> dict:
     init(data)
     topological_sort.init()
