@@ -189,4 +189,20 @@ export class RootStore {
 
         return leafTasks;
     }
+
+    downloadFile() {
+        if (this.calculatedProjectInfo) {
+            const data = JSON.stringify(this.calculatedProjectInfo);
+
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'result.json';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+    }
 }
