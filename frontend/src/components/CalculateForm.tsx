@@ -36,19 +36,19 @@ const CalculateForm = observer(() => {
             <Row style={{ width: '100%' }} gutter={[16, 16]}>
                 <Col span={8}>
                     <Form.Item style={{ width: '100%' }} label='Вес "длительности"' name='duration'>
-                        <InputNumber style={{ width: '100%' }} />
+                        <InputNumber precision={2} style={{ width: '100%' }} />
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
                     <Form.Item label='Вес "стоимости"' name='price'>
-                        <InputNumber style={{ width: '100%' }} />
+                        <InputNumber precision={2} style={{ width: '100%' }} />
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
                     <Form.Item label='Вес "ресурсов"' name='resources'>
-                        <InputNumber style={{ width: '100%' }} />
+                        <InputNumber precision={2} style={{ width: '100%' }} />
                     </Form.Item>
                 </Col>
             </Row>
