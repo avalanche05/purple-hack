@@ -7,7 +7,7 @@ from .parser import get_data
 
 raw_data: dict = json.load(open("исх.json"))
 data = get_data()
-data_lists = json.load(open("var2.json"))
+data_lists = get_data(is_dict=False)
 
 default_calendar = defaultdict(lambda: 8)
 week_days = []
@@ -37,7 +37,7 @@ def get_output(tasks: list[dict]):
                 cur_start, cur_end = change_tasks(task["children"])
                 task["startDate"] = cur_start.strftime("%Y-%m-%dT%H:%M:%S")
                 task["endDate"] = cur_end.strftime("%Y-%m-%dT%H:%M:%S")
-                task["duration"] = cur_start - cur_end
+                task["duration"] = (cur_start - cur_end).days
                 if start_date is None:
                     start_date = cur_start
                 if end_date is None:

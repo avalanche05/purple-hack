@@ -20,4 +20,7 @@ if __name__ == "__main__":
     end_date = max(min_assigned_time_list, key=lambda x: x["end_date"])["end_date"]
     res = get_output(min_assigned_time_list)
     with open("result.json", "w") as result_file:
-        json.dump(res, result_file)
+        try:
+            json.dump(res, result_file)
+        except Exception as err:
+            print("result ", err, res)

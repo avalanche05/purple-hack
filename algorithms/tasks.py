@@ -57,5 +57,4 @@ def assign_time(task_ids: list, task_user: dict, graph: dict = {}) -> list[dict]
     min_date = min(map(lambda x: x["start_date"], res))
     max_date = max(map(lambda x: x["end_date"], res))
 
-    print((max_date - min_date).days, "!!!!")
     return res

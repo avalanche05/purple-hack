@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime
 from typing import Callable, Union, List, Dict, Any
-from .common import data
-from .normalize_functions import get_base_data
+from .common import data, data_lists
+from .normalize_functions import get_base_assign_time, base_cost_len_fn, base_cost_resource_fn
 import json
 from .common import get_output
 
@@ -9,8 +9,7 @@ Number = Union[float, int]
 
 
 def calculate_normalized_values(base_assign_time: List[Dict[str, Any]]) -> list:
-    print("base", base_assign_time)
-    normalized_values = [cost_len_fn(base_assign_time), cost_resource_fn(base_assign_time),
+    normalized_values = [base_cost_len_fn(), base_cost_resource_fn(data_lists),
                          cost_fn(base_assign_time)]
     print(normalized_values)
 
@@ -51,7 +50,7 @@ def cost_resource_fn(infos: List[Dict[str, Any]]) -> int:
 
 def cost_fn(infos: List[Dict[str, Any]]) -> Number:
     total_cost = 0
-
+    print("info", infos)
     for task in infos:
         resource_id = task["resource_id"]
         total_cost += task["effort"] * data["resources"][resource_id]["price"]
@@ -69,4 +68,4 @@ def combined_cost_fn(fn1: Callable[[List[Dict[str, Any]]], int],
     return _fn
 
 
-normalized_values = calculate_normalized_values(get_base_data(data))
+normalized_values = calculate_normalized_values(get_base_assign_time(data))
