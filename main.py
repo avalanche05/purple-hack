@@ -1,9 +1,8 @@
-from algorithms.simulated_annealing import SimulatedAnnealing
-from algorithms.common import data_lists
-from algorithms.cost_functions import cost_len_fn, cost_resource_fn, cost_fn, combined_cost_fn
-from algorithms.common import get_output
+from backend.algorithms import SimulatedAnnealing
+from backend.algorithms.common import data_lists
+from backend.algorithms import cost_len_fn, cost_resource_fn, cost_fn, combined_cost_fn
+from backend.algorithms.common import get_output
 import json
-from copy import deepcopy
 
 if __name__ == "__main__":
     min_ans = None
