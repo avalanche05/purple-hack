@@ -15,6 +15,10 @@ calendar = defaultdict(lambda: default_calendar)
 
 
 def init(init_data: dict):
+    raw_data.clear()
+    data.clear()
+    data_lists.clear()
+    calendar.clear()
     raw_data.update(init_data)
     data.update(get_data(init_data))
     data_lists.update(get_data(init_data, is_dict=False))
@@ -54,7 +58,7 @@ def get_output(tasks: list[dict]):
                 start_date = min(start_date, cur_start)
                 end_date = max(end_date, cur_end)
                 while cur_start < cur_end:
-                    if default_calendar[cur_start.strftime("%Y-%m-%d")] > 0 or start_date.weekday() < 5:
+                    if default_calendar[cur_start.strftime("%Y-%m-%d")] > 0 and cur_start.weekday() < 5:
                         duration += 1
                     cur_start += timedelta(days=1)
                 task["duration"] = duration
