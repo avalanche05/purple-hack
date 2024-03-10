@@ -64,7 +64,7 @@ const CalculateForm = observer(() => {
                             form.setFieldsValue({ duration: 0, price: 1, resource: 0 });
                         }}
                     >
-                        Оптимизировать <br /> по длительности
+                        Оптимизировать <br /> по стоимости
                     </Button>
                 </Col>
 
@@ -80,7 +80,7 @@ const CalculateForm = observer(() => {
                             form.setFieldsValue({ duration: 0, price: 0, resource: 1 });
                         }}
                     >
-                        Оптимизировать <br /> по длительности
+                        Оптимизировать <br /> по ресурсам
                     </Button>
                 </Col>
             </Row>
