@@ -36,6 +36,9 @@ def assign_time(task_ids: list, task_user: dict, graph: dict = {}) -> list[dict]
             pprint(graph)
         start_date = user_time[user_id]
         while effort_time > 0:
+            if user_time[user_id].weekday() >= 5:
+                user_time[user_id] += step
+                continue
             hours = get_user_hour(task_id, user_time[user_id].strftime("%Y-%m-%d"))
             effort_time -= hours
             if hours:

@@ -34,6 +34,7 @@ def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
                 t["price"] for t in common_data["resources"].values() if t["project_role_id"] == project_role_id)
             project_role_id_list = list(
                 filter(lambda x: common_data["resources"][x]["price"] == min_price, project_role_id_list))[:1]
+        print("optimize_type", optimize_type)
         random.shuffle(project_role_id_list)
         resources_by_project_roles[project_role_id] = project_role_id_list
 
