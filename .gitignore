@@ -10,6 +10,7 @@ bandits_playground.ipynb
 bandits_playground.py
 result.json
 tmp.py
+same_size.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
