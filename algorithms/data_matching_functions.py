@@ -30,9 +30,10 @@ def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
         project_role_id = task.get("project_role_id")
         last_id = last_ids.get(project_role_id)
         tasks_to_resources[task.get("id")] = resources_by_project_roles[project_role_id][last_id]
+        last_ids[project_role_id] += 1
 
-        if last_id == len(resources_by_project_roles.get(project_role_id)):
+        if last_ids[project_role_id] == len(resources_by_project_roles.get(project_role_id)):
             random.shuffle(resources_by_project_roles[project_role_id])
-            last_ids["project_role_id"] = 0
-
+            last_ids[project_role_id] = 0
+    print(tasks_to_resources)
     return tasks_to_resources

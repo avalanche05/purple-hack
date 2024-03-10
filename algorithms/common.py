@@ -31,17 +31,25 @@ def get_output(tasks: list[dict]):
     tasks = {task["id"]: task for task in tasks}
 
     def change_tasks(tasks_list: list) -> (datetime, datetime):
-        start_date, end_date = datetime.strptime(tasks_list[0]["startDate"], "%Y-%m-%dT%H:%M:%S"), \
-            datetime.strptime(tasks_list[0]["endDate"], "%Y-%m-%dT%H:%M:%S")
+        start_date, end_date = None, None
         for task in tasks_list:
             if 'children' in task:
                 cur_start, cur_end = change_tasks(task["children"])
                 task["startDate"] = cur_start.strftime("%Y-%m-%dT%H:%M:%S")
                 task["endDate"] = cur_end.strftime("%Y-%m-%dT%H:%M:%S")
+                task["duration"] = cur_start - cur_end
+                if start_date is None:
+                    start_date = cur_start
+                if end_date is None:
+                    end_date = cur_end
                 start_date = min(start_date, cur_start)
                 end_date = max(end_date, cur_end)
             else:
                 new_task = tasks[task["id"]]
+                if start_date is None:
+                    start_date = new_task["start_date"]
+                if end_date is None:
+                    end_date = new_task["end_date"]
                 start_date = min(start_date, new_task["start_date"])
                 end_date = max(end_date, new_task["end_date"])
                 task.update(

@@ -2,6 +2,8 @@ from datetime import timedelta, datetime
 from typing import Callable, Union, List, Dict, Any
 from .common import data
 from .normalize_functions import get_base_data
+import json
+from .common import get_output
 
 Number = Union[float, int]
 
@@ -35,7 +37,6 @@ def cost_len_fn(infos: List[Dict[str, Any]]) -> int:
     for info in infos:
         start_date = min(start_date, info.get("start_date"))
         end_date = max(end_date, info.get("end_date"))
-
     return (end_date - start_date).days
 
 
