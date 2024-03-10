@@ -54,7 +54,7 @@ const CalculateForm = observer(() => {
             </Row>
 
             <Form.Item>
-                <Button size='large' type='primary' htmlType='submit'>
+                <Button loading={rootStore.loading} size='large' type='primary' htmlType='submit'>
                     Расчитать
                 </Button>
             </Form.Item>
