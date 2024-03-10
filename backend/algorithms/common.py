@@ -54,7 +54,7 @@ def get_output(tasks: list[dict]):
                 start_date = min(start_date, cur_start)
                 end_date = max(end_date, cur_end)
                 while cur_start < cur_end:
-                    if default_calendar[cur_start.strftime("%Y-%m-%d")] > 0 and start_date.weekday() < 5:
+                    if default_calendar[cur_start.strftime("%Y-%m-%d")] > 0 or start_date.weekday() < 5:
                         duration += 1
                     cur_start += timedelta(days=1)
                 task["duration"] = duration
