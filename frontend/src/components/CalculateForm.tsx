@@ -4,6 +4,7 @@ import { useStores } from '../hooks/useStores';
 
 const CalculateForm = observer(() => {
     const { rootStore } = useStores();
+    const [form] = Form.useForm();
 
     const onFinish = ({
         duration,
@@ -31,6 +32,7 @@ const CalculateForm = observer(() => {
             initialValues={{ remember: true }}
             onFinish={onFinish}
             autoComplete='off'
+            form={form}
             style={{ width: '100%' }}
         >
             <Row style={{ width: '100%' }} gutter={[16, 16]}>
@@ -38,18 +40,48 @@ const CalculateForm = observer(() => {
                     <Form.Item style={{ width: '100%' }} label='Вес "длительности"' name='duration'>
                         <InputNumber precision={2} style={{ width: '100%' }} />
                     </Form.Item>
+
+                    <Button
+                        block
+                        style={{ whiteSpace: 'normal', height: 'auto', marginBottom: '10px' }}
+                        onClick={() => {
+                            form.setFieldsValue({ duration: 1, price: 0, resource: 0 });
+                        }}
+                    >
+                        Оптимизировать <br /> по длительности
+                    </Button>
                 </Col>
 
                 <Col span={8}>
                     <Form.Item label='Вес "стоимости"' name='price'>
                         <InputNumber precision={2} style={{ width: '100%' }} />
                     </Form.Item>
+
+                    <Button
+                        block
+                        style={{ whiteSpace: 'normal', height: 'auto', marginBottom: '10px' }}
+                        onClick={() => {
+                            form.setFieldsValue({ duration: 0, price: 1, resource: 0 });
+                        }}
+                    >
+                        Оптимизировать <br /> по длительности
+                    </Button>
                 </Col>
 
                 <Col span={8}>
                     <Form.Item label='Вес "ресурсов"' name='resource'>
                         <InputNumber precision={2} style={{ width: '100%' }} />
                     </Form.Item>
+
+                    <Button
+                        block
+                        style={{ whiteSpace: 'normal', height: 'auto', marginBottom: '10px' }}
+                        onClick={() => {
+                            form.setFieldsValue({ duration: 0, price: 0, resource: 1 });
+                        }}
+                    >
+                        Оптимизировать <br /> по длительности
+                    </Button>
                 </Col>
             </Row>
 
