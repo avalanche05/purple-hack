@@ -1,6 +1,6 @@
 import { RcFile } from 'antd/es/upload';
 import { makeAutoObservable } from 'mobx';
-import { Assignment, Dependency, ProjectInfo, ProjectTask, Resource } from '../api/models/Project';
+import { Assignment, Dependency, ProjectInfo, ProjectTask } from '../api/models/Project';
 import { Task } from 'gantt-task-react';
 import { message } from 'antd';
 import { TasksApiServiceInstanse } from '../api/TasksApiService';
