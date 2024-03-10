@@ -1,6 +1,12 @@
 import { RcFile } from 'antd/es/upload';
 import { makeAutoObservable } from 'mobx';
-import { Assignment, Dependency, ProjectInfo, ProjectTask } from '../api/models/Project';
+import {
+    Assignment,
+    Dependency,
+    ProjectInfo,
+    ProjectTask,
+    UploadProjectFileParams,
+} from '../api/models/Project';
 import { Task } from 'gantt-task-react';
 import { message } from 'antd';
 import { TasksApiServiceInstanse } from '../api/TasksApiService';
@@ -109,12 +115,12 @@ export class RootStore {
         return tasks;
     }
 
-    async calculate() {
+    async calculate({ duration, file, price, resource }: UploadProjectFileParams) {
         this.loading = true;
 
         console.log(this.file);
 
-        TasksApiServiceInstanse.calculate({ file: this.file as RcFile, priority: 'PRICE' })
+        TasksApiServiceInstanse.calculate({ file, duration, price, resource })
             .then((data) => {
                 this.calculatedProjectInfo = data;
 

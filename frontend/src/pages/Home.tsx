@@ -8,6 +8,7 @@ import { observer } from 'mobx-react-lite';
 import 'gantt-task-react/dist/index.css';
 import { ProjectInfo } from '../api/models/Project';
 import Diagram from '../components/Gantt';
+import CalculateForm from '../components/CalculateForm';
 
 const Home = observer(() => {
     const { rootStore } = useStores();
@@ -82,16 +83,8 @@ const Home = observer(() => {
                             </Row>
 
                             <Row>
-                                <Col>
-                                    <Button
-                                        type='primary'
-                                        size='large'
-                                        onClick={() => rootStore.calculate()}
-                                        disabled={!rootStore.file}
-                                        loading={rootStore.loading}
-                                    >
-                                        {rootStore.loading ? 'Файл обрабатывается' : 'Расчитать'}
-                                    </Button>
+                                <Col span={24}>
+                                    <CalculateForm />
                                 </Col>
                             </Row>
                         </>

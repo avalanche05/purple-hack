@@ -122,5 +122,7 @@ export interface ProjectInfo {
 
 export interface UploadProjectFileParams {
     file: RcFile;
-    priority: string;
+    price: number;
+    duration: number;
+    resource: number;
 }

@@ -3,13 +3,18 @@ import { API_URL } from '../config';
 import axios from 'axios';
 
 class TasksApiService {
-    public async calculate({ file, priority }: UploadProjectFileParams): Promise<ProjectInfo> {
+    public async calculate({
+        file,
+        duration,
+        price,
+        resource,
+    }: UploadProjectFileParams): Promise<ProjectInfo> {
         const formData = new FormData();
 
         formData.append('file', file);
 
         const response = await axios.post<ProjectInfo>(`${API_URL}/calculate`, formData, {
-            params: { priority },
+            params: { duration, price, resource },
         });
 
         return response.data;
