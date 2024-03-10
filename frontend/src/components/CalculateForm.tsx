@@ -47,7 +47,7 @@ const CalculateForm = observer(() => {
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label='Вес "ресурсов"' name='resources'>
+                    <Form.Item label='Вес "ресурсов"' name='resource'>
                         <InputNumber precision={2} style={{ width: '100%' }} />
                     </Form.Item>
                 </Col>
