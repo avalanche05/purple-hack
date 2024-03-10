@@ -5,8 +5,9 @@ import { LogoutOutlined, UploadOutlined } from '@ant-design/icons';
 import AuthService from '../api/AuthService';
 import { useStores } from '../hooks/useStores';
 import { observer } from 'mobx-react-lite';
-import { Gantt, ViewMode } from 'gantt-task-react';
 import 'gantt-task-react/dist/index.css';
+import { ProjectInfo } from '../api/models/Project';
+import Diagram from '../components/Gantt';
 
 const Home = observer(() => {
     const { rootStore } = useStores();
@@ -70,13 +71,11 @@ const Home = observer(() => {
 
                     {rootStore.uploadedGanttTasks && (
                         <>
-                            <Row style={{ marginTop: 20 }}>
-                                <Typography.Title level={2}>
-                                    График из загруженного файла
-                                </Typography.Title>
-                            </Row>
-
-                            <Gantt tasks={rootStore.uploadedGanttTasks} viewMode={ViewMode.Week} />
+                            <Diagram
+                                projectInfo={rootStore.uploadedProjectInfo as ProjectInfo}
+                                tasks={rootStore.uploadedGanttTasks}
+                                title='График из загруженного файла'
+                            />
 
                             <Row>
                                 <Typography.Title level={2}>Расчет</Typography.Title>
@@ -100,13 +99,10 @@ const Home = observer(() => {
 
                     {rootStore.calculatedGanttTasks && (
                         <>
-                            <Row style={{ marginTop: 20 }}>
-                                <Typography.Title level={2}>График после расчета</Typography.Title>
-                            </Row>
-
-                            <Gantt
+                            <Diagram
+                                projectInfo={rootStore.calculatedProjectInfo as ProjectInfo}
                                 tasks={rootStore.calculatedGanttTasks}
-                                viewMode={ViewMode.Week}
+                                title='График после расчета'
                             />
                         </>
                     )}
