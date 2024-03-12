@@ -5,7 +5,6 @@ from copy import deepcopy
 
 from .parser import get_data
 
-print("IN COMMON")
 
 raw_data = dict()
 data = dict()
