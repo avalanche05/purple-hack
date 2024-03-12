@@ -46,7 +46,7 @@ def get_data(d, is_dict=True) -> dict | list:
         users[user["id"]] = {
             "id": user["id"],
             "price": price,
-            "project_role_id": user["projectRoleId"],
+            "project_role_id": user.get("projectRoleId", "-"),
             "hours": 8,
         }
 
