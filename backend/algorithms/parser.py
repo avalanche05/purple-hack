@@ -12,7 +12,10 @@ def get_price_from_name(name: str) -> float:
         else:
             break
 
-    return float(res)
+    if res.strip().replace(".", "").isdigit():
+        return float(res)
+    else:
+        return 2000
 
 
 def get_tasks(data: list) -> list:
