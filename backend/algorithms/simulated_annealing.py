@@ -40,7 +40,8 @@ class SimulatedAnnealing:
                 annealed_task_sequence[first_id], annealed_task_sequence[second_id] = annealed_task_sequence[second_id], \
                     annealed_task_sequence[first_id]
                 print(task_sequence[first_id], task_sequence[second_id])
-                annealed_assigned_time_list = assign_time(deepcopy(annealed_task_sequence), deepcopy(tasks_to_resources), deepcopy(blockers))
+                annealed_assigned_time_list = assign_time(deepcopy(annealed_task_sequence),
+                                                          deepcopy(tasks_to_resources), deepcopy(blockers))
                 annealed_ans = self.cost_fn(deepcopy(annealed_assigned_time_list))
 
                 if annealed_ans < ans or random.uniform(0, 1) < math.exp((ans - annealed_ans) / self.temp):
@@ -50,12 +51,13 @@ class SimulatedAnnealing:
 
         return ans, assigned_time_list
 
-    def predict_resource(self, data, optimize_type="time"):
+    def predict_resource(self, data: dict, role_ids_local_count: dict, optimize_type="time"):
         resources_by_project_roles = create_project_role_ids(data.get("resources"))
-        tasks_to_resources = match_task_id_to_resourse_id(data, resources_by_project_roles, optimize_type)
+        tasks_to_resources = match_task_id_to_resourse_id(data, resources_by_project_roles, role_ids_local_count, optimize_type)
         tasks_by_project_roles = create_project_role_ids(data.get("tasks"))
         project_roles = list(tasks_by_project_roles.keys())
-        sequence_simulated_annealing = SimulatedAnnealing(self.cost_fn, 1.0, 0.99, 1000)
+
+        sequence_simulated_annealing = SimulatedAnnealing(self.cost_fn, 1.0, 0.99, 100)
         ans, assigned_time_list = sequence_simulated_annealing.predict_sequence(tasks_to_resources)
 
         for i in range(self.num_iterations):
