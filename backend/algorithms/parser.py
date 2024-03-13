@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 from datetime import datetime
 from typing import Any
 from copy import deepcopy
@@ -26,6 +27,15 @@ def get_tasks(data: list) -> list:
         else:
             result.append(task)
     return result
+
+
+task_tree = defaultdict(list)
+
+
+def get_leaf(node_id):
+    if not task_tree[node_id]:
+        return node_id
+    return get_leaf(task_tree[node_id][0])
 
 
 def get_data(d, is_dict=True) -> dict | list:
