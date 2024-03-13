@@ -15,6 +15,8 @@ class TopSort:
         self.time = 0
         self.blokers = {}
         self.top_sort()
+        self.is_root = {}
+        self.is_leaf = {}
 
     def dfs(self, vertex: str, par: str) -> None:
         self.tin[vertex] = self.time
