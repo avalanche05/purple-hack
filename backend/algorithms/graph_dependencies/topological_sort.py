@@ -1,5 +1,5 @@
 import random
-from .graph import create_graph, get_all_roots, get_all_leaves, create_roots_leaves_graph
+from .graph import create_graph, get_all_roots, get_all_leaves, dp_roots_and_leaves, extend_graph
 from ..common import data_lists
 
 
@@ -8,6 +8,7 @@ class TopSort:
         if not data:
             return
         self.graph = create_graph(data.get("dependencies"), data.get("is_task"))
+        self.extended_graph = {}
         self.roots = get_all_roots(data.get("dependencies"), data.get("is_task"))
         self.leaves = get_all_leaves(data.get("dependencies"), data.get("is_task"))
         self.task_sequence = []
@@ -16,7 +17,13 @@ class TopSort:
         self.time = 0
         self.blokers = {}
         self.top_sort()
-        self.roots_gr, self.leaves_gr = create_roots_leaves_graph(data.get("task_tree"), data.get("is_task"), )
+        self.roots_gr = {}
+        self.leaves_gr = {}
+
+    def init_extended_graph(self, data: dict):
+        self.roots_gr, self.leaves_gr = dp_roots_and_leaves(data.get("task_tree"), data.get("is_task"), self.roots, self.leaves)
+
+        self.extended_graph = extend_graph(self.graph, data.get("dependencies"), self.roots_gr, self.leaves_gr)
 
     def dfs(self, vertex: str, par: str) -> None:
         self.tin[vertex] = self.time

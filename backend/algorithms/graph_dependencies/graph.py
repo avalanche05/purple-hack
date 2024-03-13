@@ -1,8 +1,8 @@
 def create_graph(dependencies, is_task) -> dict:
     graph = {}
     for edge in dependencies:
-        to_id = edge.get("to")
         from_id = edge.get("from")
+        to_id = edge.get("to")
         if is_task.get(from_id) and is_task.get(to_id):
             if from_id not in graph:
                 graph[from_id] = [to_id]
@@ -42,34 +42,59 @@ def get_all_leaves(dependencies, is_task) -> set:
 
 
 def create_roots_leaves_graph(task_tree, is_task, roots, leaves):
-    #  по id проекта получить ребенка
-    roots = {}
-    leaves = {}
+    """For each project create graph of roots and leaves"""
+
+    roots_gr = {}
+    leaves_gr = {}
+
+    for task_id, is_task_flag in is_task:
+        if is_task_flag:
+            roots_gr[task_id] = [task_id]
+            leaves_gr[task_id] = [task_id]
+
     for project_id, task_list in task_tree:
         for task_id in task_list:
-            if is_task.get(task_id):
+            if is_task.get(task_id):  # если таска, то добавляем в список проекта
                 if task_id in roots:
                     if project_id not in roots:
-                        roots[project_id] = [task_id]
+                        roots_gr[project_id] = [task_id]
                     else:
-                        roots[project_id].append(task_id)
+                        roots_gr[project_id].append(task_id)
                 if task_id in leaves:
                     if project_id not in roots:
-                        leaves[project_id] = [task_id]
+                        leaves_gr[project_id] = [task_id]
                     else:
-                        leaves[project_id].append(task_id)
+                        leaves_gr[project_id].append(task_id)
 
-    return roots, leaves
-
-
-def projects_tree_dfs(project_id, project_gr, is_root, is_leaf):
-    #  param in: data
-    if len(project_gr) == 0:
-        return
-    for project in project_gr[project_id]:
-        pass
+    return roots_gr, leaves_gr
 
 
-def projects_tree_dp(project_gr, is_root, is_leaf):
-    #  param in: data
-    pass
+def projects_tree_dfs(project_id, par, task_tree, roots_gr, leaves_gr):
+    """Dynamic programming that reculsively recalculates roots and leaves for every project and task"""
+
+    for child_id in task_tree.get(project_id, []):
+        if child_id != par:
+            projects_tree_dfs(child_id, project_id, task_tree, roots_gr, leaves_gr)
+            roots_gr[project_id].extend(roots_gr[child_id])
+            leaves_gr[project_id].extend(leaves_gr[child_id])
+
+
+def dp_roots_and_leaves(task_tree, is_task, roots, leaves):
+    roots_gr, leaves_gr = create_roots_leaves_graph(task_tree, is_task, roots, leaves)
+    root_id = task_tree.get("*")[0]
+    projects_tree_dfs(root_id, "-1", task_tree, roots_gr, leaves_gr)
+    return roots_gr, leaves_gr
+
+
+def extend_graph(graph, dependencies, roots_gr, leaves_gr) -> dict:
+    """Draws edges connecting blocker-project and blocked-project"""
+
+    for edge in dependencies:
+        from_id = edge.get("from")
+        to_id = edge.get("to")
+        for leaf in leaves_gr.get(from_id, []):
+            for root in roots_gr.get(to_id, []):
+                graph[leaf].append(root)
+
+    return graph
+
