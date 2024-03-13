@@ -1,3 +1,5 @@
+import json
+
 from algorithms.common import init, get_output, data_lists
 from algorithms.cost_functions import combined_cost_fn, cost_len_fn, cost_resource_fn, cost_fn
 from algorithms.simulated_annealing import SimulatedAnnealing
@@ -7,6 +9,9 @@ from algorithms import cost_functions
 
 def process_json(data: dict, duration: float, price: float, resource: float) -> dict:
     init(data)
+    with open("data_lists.json", "w") as f:
+        json.dump(data_lists, f)
+    print(data_lists.get("is_task"))
     topological_sort.init()
     cost_functions.init()
 

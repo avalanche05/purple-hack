@@ -1,5 +1,5 @@
 import random
-from .graph import create_graph, get_roots
+from .graph import create_graph, get_all_roots, get_all_leaves, create_roots_leaves_graph
 from ..common import data_lists
 
 
@@ -7,16 +7,16 @@ class TopSort:
     def __init__(self, data: dict):
         if not data:
             return
-        self.graph = create_graph(data.get("dependencies"))
-        self.roots = get_roots(self.graph, data.get("dependencies"))
+        self.graph = create_graph(data.get("dependencies"), data.get("is_task"))
+        self.roots = get_all_roots(data.get("dependencies"), data.get("is_task"))
+        self.leaves = get_all_leaves(data.get("dependencies"), data.get("is_task"))
         self.task_sequence = []
         self.tin = {}
         self.tout = {}
         self.time = 0
         self.blokers = {}
         self.top_sort()
-        self.is_root = {}
-        self.is_leaf = {}
+        self.roots_gr, self.leaves_gr = create_roots_leaves_graph(data.get("task_tree"), data.get("is_task"), )
 
     def dfs(self, vertex: str, par: str) -> None:
         self.tin[vertex] = self.time
@@ -66,7 +66,8 @@ class TopSort:
                 self.dfs_shuffled(to, vertex, sequence)
 
     def create_sequence(self) -> list:
-        random.shuffle(self.roots)
+        shuffled_roots = list(self.roots)
+        random.shuffle(shuffled_roots)
         sequence = []
         for root in self.roots:
             self.dfs_shuffled(root, -1, sequence)
