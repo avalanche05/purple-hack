@@ -18,6 +18,7 @@ def get_roots(blockers, dependencies, is_task) -> list:
             roots.remove(to_id)
 
     return list(roots)
+<<<<<<< HEAD
 
 
 def get_leaves(graph, dependencies, is_task) -> list:
@@ -42,8 +43,10 @@ def projects_tree_dfs(project_id, project_gr, is_root, is_leaf):
     if len(project_gr) == 0:
         return
     for project in project_gr[project_id]:
-        data
+        pass
 
 
 def projects_tree_dp(project_gr, is_root, is_leaf):
     #  param in: data
+=======
+>>>>>>> e6edbf16e77feb8c6650122344f233ab770a73e5
