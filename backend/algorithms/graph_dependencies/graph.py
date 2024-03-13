@@ -1,4 +1,6 @@
 def create_graph(dependencies, is_task) -> dict:
+    """Create base graph only with tasks dependencies"""
+
     graph = {}
     for edge in dependencies:
         from_id = edge.get("from")
@@ -56,12 +58,12 @@ def create_roots_leaves_graph(task_tree, is_task, roots, leaves):
         for task_id in task_list:
             if is_task.get(task_id):  # если таска, то добавляем в список проекта
                 if task_id in roots:
-                    if project_id not in roots:
+                    if project_id not in roots_gr:
                         roots_gr[project_id] = [task_id]
                     else:
                         roots_gr[project_id].append(task_id)
                 if task_id in leaves:
-                    if project_id not in roots:
+                    if project_id not in leaves_gr:
                         leaves_gr[project_id] = [task_id]
                     else:
                         leaves_gr[project_id].append(task_id)

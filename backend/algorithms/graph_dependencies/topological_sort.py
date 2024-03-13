@@ -23,7 +23,7 @@ class TopSort:
     def init_extended_graph(self, data: dict):
         self.roots_gr, self.leaves_gr = dp_roots_and_leaves(data.get("task_tree"), data.get("is_task"), self.roots, self.leaves)
 
-        self.extended_graph = extend_graph(self.graph, data.get("dependencies"), self.roots_gr, self.leaves_gr)
+        self.graph = extend_graph(self.graph, data.get("dependencies"), self.roots_gr, self.leaves_gr)
 
     def dfs(self, vertex: str, par: str) -> None:
         self.tin[vertex] = self.time
