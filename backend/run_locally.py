@@ -6,4 +6,7 @@ price = 0
 resource = 0
 
 with open("тестовое задание.json") as input_file:
-    process_json(json.load(input_file), duration, price, resource)
+    res = process_json(json.load(input_file), duration, price, resource)
+
+    with open("result.json", "w") as output_file:
+        json.dump(res, output_file)
