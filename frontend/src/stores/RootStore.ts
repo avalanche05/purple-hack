@@ -161,10 +161,16 @@ export class RootStore {
             if (
                 resource &&
                 resource.name &&
-                typeof +resource.name.match(/(?<=\()\d+/g)![0] === 'number' &&
-                task.effort
+                typeof resource.name === 'string' &&
+                task &&
+                task.effort &&
+                typeof task.effort === 'number'
             ) {
-                totalCost += task.effort * +resource.name.match(/(?<=\()\d+/g)![0];
+                try {
+                    totalCost += task.effort * +resource.name.match(/(?<=\()\d+/g)![0];
+                } catch (error) {
+                    console.log(error);
+                }
             }
         });
 
