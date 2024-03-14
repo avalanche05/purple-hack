@@ -28,6 +28,8 @@ def count_role_ids(resources: List[Dict[str, Any]]) -> Dict[str, int]:
 
 
 def match_name_to_role_id(name: str):
+    if not name:
+        return "-"
     if "аналитика" in name.lower():
         return "analyst"
     if "разработка" in name.lower():
