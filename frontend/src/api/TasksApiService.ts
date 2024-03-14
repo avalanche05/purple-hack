@@ -15,6 +15,7 @@ class TasksApiService {
 
         const response = await axios.post<ProjectInfo>(`${API_URL}/calculate`, formData, {
             params: { duration, price, resource },
+            timeout: 120000,
         });
 
         return response.data;

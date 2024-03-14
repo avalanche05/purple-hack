@@ -158,7 +158,12 @@ export class RootStore {
                 (resource) => resource.id === taskToResourceMap.get(task.id)
             );
 
-            if (resource) {
+            if (
+                resource &&
+                resource.name &&
+                typeof +resource.name.match(/(?<=\()\d+/g)![0] === 'number' &&
+                task.effort
+            ) {
                 totalCost += task.effort * +resource.name.match(/(?<=\()\d+/g)![0];
             }
         });
