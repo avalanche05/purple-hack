@@ -33,6 +33,8 @@ def assign_time(task_ids: list, task_user: dict, graph: dict = {}) -> list[dict]
             print("!!!")
             print(task_ids)
             print(blocker_ids)
+            print("task_id", task_id)
+            print("blocker_id", blocker_id)
             pprint(graph)
         start_date = user_time[user_id]
         while effort_time > 0:

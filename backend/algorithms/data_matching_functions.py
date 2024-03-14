@@ -18,22 +18,35 @@ def create_project_role_ids(resources: List[Dict[str, Any]]) -> Dict[str, List[s
     return resources_by_project_roles
 
 
+def count_role_ids(resources: List[Dict[str, Any]]) -> Dict[str, int]:
+    resources_by_project_roles = create_project_role_ids(resources)
+    role_ids_count = {}
+    for role_id, resource_list in resources_by_project_roles.items():
+        role_ids_count[role_id] = len(resource_list)
+
+    return role_ids_count
+
+
+def match_name_to_role_id(name: str):
+    if "аналитика" in name.lower():
+        return "analyst"
+    if "разработка" in name.lower():
+        return "developer"
+    if "тестирование" in name.lower():
+        return "tester"
+
+
 def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
-                                 resources_by_project_roles: Dict[str, List[str]], optimize_type="time") -> Dict[
-    str, str]:
+                                 resources_by_project_roles: Dict[str, List[str]],
+                                 role_ids_local_count: Dict[str, List[str]], optimize_type="time") -> Dict[str, str]:
     """Randomly assign resourse_id to each task_id based on project_role"""
 
     for project_role_id, project_role_id_list in resources_by_project_roles.items():
-        if optimize_type == "price":
-            min_price = min(
-                t["price"] for t in common_data["resources"].values() if t["project_role_id"] == project_role_id)
-            project_role_id_list = list(
-                filter(lambda x: common_data["resources"][x]["price"] == min_price, project_role_id_list))
-        if optimize_type == "resource":
-            min_price = min(
-                t["price"] for t in common_data["resources"].values() if t["project_role_id"] == project_role_id)
-            project_role_id_list = list(
-                filter(lambda x: common_data["resources"][x]["price"] == min_price, project_role_id_list))[:1]
+        if optimize_type == "price" or optimize_type == "resource":
+            role_resources_cnt = role_ids_local_count.get(project_role_id, 0)
+            cheapest_resources = sorted([(x.get("price"), x.get("id")) for x in data.get("resources")
+                                         if x.get("project_role_id") == project_role_id])[:role_resources_cnt]
+            project_role_id_list = [x[1] for x in cheapest_resources]
         random.shuffle(project_role_id_list)
         resources_by_project_roles[project_role_id] = project_role_id_list
 
@@ -42,8 +55,10 @@ def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
 
     for task in data.get("tasks"):
         project_role_id = task.get("project_role_id")
+        if project_role_id is None:
+            project_role_id = match_name_to_role_id(task.get("name"))
+            # project_role_id = random.choice(list(role_ids_local_count.keys()))
         last_id = last_ids.get(project_role_id)
-        # print(resources_by_project_roles)
         tasks_to_resources[task.get("id")] = resources_by_project_roles[project_role_id][last_id]
         last_ids[project_role_id] += 1
 

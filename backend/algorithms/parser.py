@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 from datetime import datetime
 from typing import Any
 from copy import deepcopy
@@ -18,23 +19,28 @@ def get_price_from_name(name: str) -> float:
         return 2000
 
 
-def get_tasks(data: list) -> list:
+def get_tasks(data: list, is_task: dict, task_tree: dict, parent_id="*") -> list:
     result = []
     for task in data:
+        task_tree[parent_id].append(task["id"])
         if 'children' in task:
-            result.extend(get_tasks(task['children']))
+            is_task[task["id"]] = False
+            result.extend(get_tasks(task['children'], is_task, task_tree, task["id"]))
         else:
+            is_task[task["id"]] = True
             result.append(task)
     return result
 
 
 def get_data(d, is_dict=True) -> dict | list:
+    is_task = defaultdict(bool)
+    task_tree = defaultdict(list)
     tasks = dict()
     users = dict()
     dependencies = dict()
 
     data = deepcopy(d)
-    for task in get_tasks(data["tasks"]["rows"]):
+    for task in get_tasks(data["tasks"]["rows"], is_task, task_tree):
         tasks[task["id"]] = {
             "id": task["id"],
             "effort": task["effort"],
@@ -69,6 +75,8 @@ def get_data(d, is_dict=True) -> dict | list:
         "resources": users,
         "tasks": tasks,
         "dependencies": dependencies,
+        "is_task": is_task,
+        "task_tree": task_tree,
     }
 
     var2 = {
@@ -76,6 +84,8 @@ def get_data(d, is_dict=True) -> dict | list:
         "resources": list(users.values()),
         "tasks": list(tasks.values()),
         "dependencies": list(dependencies.values()),
+        "is_task": is_task,
+        "task_tree": task_tree,
     }
 
     if is_dict:
