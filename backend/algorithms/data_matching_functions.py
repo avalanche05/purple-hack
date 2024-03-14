@@ -27,6 +27,15 @@ def count_role_ids(resources: List[Dict[str, Any]]) -> Dict[str, int]:
     return role_ids_count
 
 
+def match_name_to_role_id(name: str):
+    if "аналитика" in name.lower():
+        return "analyst"
+    if "разработка" in name.lower():
+        return "developer"
+    if "тестирование" in name.lower():
+        return "tester"
+
+
 def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
                                  resources_by_project_roles: Dict[str, List[str]],
                                  role_ids_local_count: Dict[str, List[str]], optimize_type="time") -> Dict[str, str]:
@@ -47,7 +56,8 @@ def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
     for task in data.get("tasks"):
         project_role_id = task.get("project_role_id")
         if project_role_id is None:
-            project_role_id = random.choice(list(role_ids_local_count.keys()))
+            project_role_id = match_name_to_role_id(task.get("name"))
+            # project_role_id = random.choice(list(role_ids_local_count.keys()))
         last_id = last_ids.get(project_role_id)
         tasks_to_resources[task.get("id")] = resources_by_project_roles[project_role_id][last_id]
         last_ids[project_role_id] += 1

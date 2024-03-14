@@ -44,6 +44,9 @@ def process_json(data: dict, duration: float, price: float, resource: float) -> 
 
     role_ids_count = count_role_ids(data_lists.get("resources"))
     print(role_ids_count)
+    min_sum = 1000
+    ans = 1000
+    assigned_time_list = []
 
     if duration == 1 or (price == 0 and resource == 0):
         ans, assigned_time_list = run_simulated_annealing(duration, price, resource, role_ids_count["analyst"],
@@ -53,6 +56,11 @@ def process_json(data: dict, duration: float, price: float, resource: float) -> 
     for analysts in range(1, role_ids_count["analyst"]):
         for devs in range(1, role_ids_count["developer"]):
             for testers in range(1, role_ids_count["tester"]):
-                ans, assigned_time_list = run_simulated_annealing(duration, price, resource, analysts, devs, testers)
+                current_sum = analysts + devs + testers
+                current_ans, current_assigned_time_list = run_simulated_annealing(duration, price, resource, analysts, devs, testers)
+                if resource == 1 and current_sum < min_sum:
+                    ans = current_ans, assigned_time_list = current_assigned_time_list
+                else:
+                    ans = current_ans, assigned_time_list = current_assigned_time_list
 
     return get_output(assigned_time_list)
