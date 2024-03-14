@@ -5,9 +5,9 @@ from backend.app.utils.calculate import process_json
 import json
 from datetime import datetime
 
-duration = 1
+duration = 0
 price = 0
-resource = 0
+resource = 1
 
 
 def get_start_end(task_id: str, tasks: list):
@@ -31,7 +31,7 @@ def check_dependencies(dependencies, tasks):
             checks.append(dependency)
     return checks
 
-with open("проверочное задание.json") as input_file:
+with open("../проверочное задание.json") as input_file:
     inp_data = json.load(input_file)
     final_res = process_json(deepcopy(inp_data), duration, price, resource)
 
@@ -47,5 +47,5 @@ with open("проверочное задание.json") as input_file:
             checks = new_checks
             final_res = res
         count += 1
-    with open("result.json", "w") as output_file:
+    with open("result_resources.json", "w") as output_file:
         json.dump(res, output_file)

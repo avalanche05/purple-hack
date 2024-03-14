@@ -43,6 +43,7 @@ def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
                                  role_ids_local_count: Dict[str, List[str]], optimize_type="time") -> Dict[str, str]:
     """Randomly assign resourse_id to each task_id based on project_role"""
 
+    print(f'{role_ids_local_count=}')
     for project_role_id, project_role_id_list in resources_by_project_roles.items():
         if optimize_type == "price" or optimize_type == "resource":
             role_resources_cnt = role_ids_local_count.get(project_role_id, 0)
@@ -53,7 +54,10 @@ def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
         resources_by_project_roles[project_role_id] = project_role_id_list
 
     last_ids = dict(zip(resources_by_project_roles.keys(), [0] * len(resources_by_project_roles)))
+    print(f'{last_ids=} ')
     tasks_to_resources = {}
+
+
 
     for task in data.get("tasks"):
         project_role_id = task.get("project_role_id")
@@ -61,6 +65,9 @@ def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
             project_role_id = match_name_to_role_id(task.get("name"))
             # project_role_id = random.choice(list(role_ids_local_count.keys()))
         last_id = last_ids.get(project_role_id)
+        print(f'{project_role_id=}, {last_id=}')
+        if project_role_id == '-':
+            continue
         tasks_to_resources[task.get("id")] = resources_by_project_roles[project_role_id][last_id]
         last_ids[project_role_id] += 1
 
