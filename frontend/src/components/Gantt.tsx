@@ -16,12 +16,19 @@ const Diagram = observer(({ tasks, title, projectInfo }: Props) => {
     return (
         <>
             <Row gutter={16}>
-                <Col span={12}>
+                <Col span={8}>
                     <Statistic title='Стоимость' value={rootStore.getProjectCost(projectInfo)} />
                 </Col>
 
-                <Col span={12}>
+                <Col span={8}>
                     <Statistic title='Длительность' value={projectInfo.tasks.rows[0].duration} />
+                </Col>
+
+                <Col span={8}>
+                    <Statistic
+                        title='Количество исполнителей'
+                        value={rootStore.getProjectResourcesCount(projectInfo)}
+                    />
                 </Col>
             </Row>
 

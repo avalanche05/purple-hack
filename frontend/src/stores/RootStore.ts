@@ -166,6 +166,16 @@ export class RootStore {
         return totalCost;
     }
 
+    getProjectResourcesCount(projectInfo: ProjectInfo): number {
+        const resources = new Set<string>();
+
+        projectInfo.assignments.rows.forEach((assignment) => {
+            if (assignment.resource) resources.add(assignment.resource);
+        });
+
+        return resources.size;
+    }
+
     private getTaskToResourcesMap(projectInfo: ProjectInfo): Map<string, string> {
         const taskToResourceMap = new Map<string, string>();
 
