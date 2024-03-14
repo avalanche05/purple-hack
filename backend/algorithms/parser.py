@@ -41,7 +41,9 @@ def get_data(d, is_dict=True) -> dict | list:
 
     data = deepcopy(d)
     for task in get_tasks(data["tasks"]["rows"], is_task, task_tree):
-        effort = task["effort"]
+        effort = task.get("effort", 0)
+        if "effortUnit" not in task:
+            task["effortUnit"] = "h"
         if "d" in task["effortUnit"].lower() or "day" in task["effortUnit"].lower():
             effort *= 8
         tasks[task["id"]] = {
@@ -72,7 +74,8 @@ def get_data(d, is_dict=True) -> dict | list:
             "to": dependency["to"],
         }
 
-    start_date = datetime.strptime(data["project"]["startDate"], "%Y-%m-%d")
+    print(data["tasks"]["rows"][0]["startDate"])
+    start_date = datetime.strptime(data["tasks"]["rows"][0]["startDate"], "%Y-%m-%dT%H:%M:%S")
     var1 = {
         "start_date": start_date.strftime("%Y-%m-%d"),
         "resources": users,
