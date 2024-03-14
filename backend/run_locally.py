@@ -1,11 +1,11 @@
 from backend.app.utils.calculate import process_json
 import json
 
-duration = 1
-price = 0
+duration = 0
+price = 1
 resource = 0
 
-with open("../исх.json") as input_file:
+with open("../проверочное задание.json") as input_file:
     res = process_json(json.load(input_file), duration, price, resource)
 
     with open("result.json", "w", encoding="utf-8") as output_file:
