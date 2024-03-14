@@ -59,8 +59,9 @@ def process_json(data: dict, duration: float, price: float, resource: float) -> 
                 current_sum = analysts + devs + testers
                 current_ans, current_assigned_time_list = run_simulated_annealing(duration, price, resource, analysts, devs, testers)
                 if resource == 1 and current_sum < min_sum:
-                    ans = current_ans, assigned_time_list = current_assigned_time_list
+                    min_sum = current_sum
+                    ans, assigned_time_list = current_ans, current_assigned_time_list
                 else:
-                    ans = current_ans, assigned_time_list = current_assigned_time_list
+                    ans, assigned_time_list = current_ans, current_assigned_time_list
 
     return get_output(assigned_time_list)
