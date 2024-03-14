@@ -47,6 +47,8 @@ def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
 
     for task in data.get("tasks"):
         project_role_id = task.get("project_role_id")
+        if project_role_id is None:
+            project_role_id = random.choice(list(role_ids_local_count.keys()))
         last_id = last_ids.get(project_role_id)
         tasks_to_resources[task.get("id")] = resources_by_project_roles[project_role_id][last_id]
         last_ids[project_role_id] += 1

@@ -1,8 +1,8 @@
 from backend.app.utils.calculate import process_json
 import json
 
-duration = 0
-price = 1
+duration = 1
+price = 0
 resource = 0
 
 with open("../тестовое задание.json") as input_file:
