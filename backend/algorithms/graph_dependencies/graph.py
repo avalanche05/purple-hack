@@ -1,7 +1,11 @@
+from collections import defaultdict
+
+
 def create_graph(dependencies, is_task) -> dict:
     """Create base graph only with tasks dependencies"""
 
-    graph = {}
+    blockers = defaultdict(list)
+    graph = defaultdict(list)
     for edge in dependencies:
         from_id = edge.get("from")
         to_id = edge.get("to")
@@ -10,8 +14,9 @@ def create_graph(dependencies, is_task) -> dict:
                 graph[from_id] = [to_id]
             else:
                 graph[from_id].append(to_id)
+            blockers[to_id].append(from_id)
 
-    return graph
+    return graph, blockers
 
 
 def get_tasks(is_task) -> set:
@@ -46,15 +51,16 @@ def get_all_leaves(dependencies, is_task) -> set:
 def create_roots_leaves_graph(task_tree, is_task, roots, leaves):
     """For each project create graph of roots and leaves"""
 
-    roots_gr = {}
-    leaves_gr = {}
+    roots_gr = defaultdict(list)
+    leaves_gr = defaultdict(list)
 
-    for task_id, is_task_flag in is_task:
-        if is_task_flag:
-            roots_gr[task_id] = [task_id]
-            leaves_gr[task_id] = [task_id]
+    for r in roots:
+        roots_gr[r] = [r]
 
-    for project_id, task_list in task_tree:
+    for l in leaves:
+        leaves_gr[l] = [l]
+
+    for project_id, task_list in task_tree.items():
         for task_id in task_list:
             if is_task.get(task_id):  # если таска, то добавляем в список проекта
                 if task_id in roots:
@@ -88,15 +94,18 @@ def dp_roots_and_leaves(task_tree, is_task, roots, leaves):
     return roots_gr, leaves_gr
 
 
-def extend_graph(graph, dependencies, roots_gr, leaves_gr) -> dict:
+def extend_graph(graph, dependencies, roots_gr, leaves_gr, blockers) -> dict:
     """Draws edges connecting blocker-project and blocked-project"""
 
     for edge in dependencies:
         from_id = edge.get("from")
         to_id = edge.get("to")
+        if from_id == "7345363831820451841" and to_id == "7345357956305190913":
+            x = 0
         for leaf in leaves_gr.get(from_id, []):
             for root in roots_gr.get(to_id, []):
                 graph[leaf].append(root)
+                blockers[root].append(leaf)
+
 
     return graph
-
