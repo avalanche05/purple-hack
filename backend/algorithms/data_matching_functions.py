@@ -43,7 +43,6 @@ def match_task_id_to_resourse_id(data: Dict[str, List[Dict[str, Any]]],
 
     last_ids = dict(zip(resources_by_project_roles.keys(), [0] * len(resources_by_project_roles)))
     tasks_to_resources = {}
-    print(f'{resources_by_project_roles=}')
 
     for task in data.get("tasks"):
         project_role_id = task.get("project_role_id")

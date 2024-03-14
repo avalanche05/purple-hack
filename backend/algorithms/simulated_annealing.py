@@ -39,7 +39,6 @@ class SimulatedAnnealing:
                 annealed_task_sequence = task_sequence.copy()
                 annealed_task_sequence[first_id], annealed_task_sequence[second_id] = annealed_task_sequence[second_id], \
                     annealed_task_sequence[first_id]
-                print(task_sequence[first_id], task_sequence[second_id])
                 annealed_assigned_time_list = assign_time(deepcopy(annealed_task_sequence),
                                                           deepcopy(tasks_to_resources), deepcopy(blockers))
                 annealed_ans = self.cost_fn(deepcopy(annealed_assigned_time_list))

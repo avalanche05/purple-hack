@@ -37,9 +37,6 @@ def run_simulated_annealing(duration, price, resource, analyst_cnt, dev_cnt, tes
 
 def process_json(data: dict, duration: float, price: float, resource: float) -> dict:
     init(data)
-    with open("data_lists.json", "w") as f:
-        json.dump(data_lists, f)
-    print(data_lists.get("is_task"))
     topological_sort.init()
     cost_functions.init()
 
@@ -48,15 +45,14 @@ def process_json(data: dict, duration: float, price: float, resource: float) -> 
     role_ids_count = count_role_ids(data_lists.get("resources"))
     print(role_ids_count)
 
+    if duration == 1 or (price == 0 and resource == 0):
+        ans, assigned_time_list = run_simulated_annealing(duration, price, resource, role_ids_count["analyst"],
+                                                          role_ids_count["developer"], role_ids_count["tester"])
+        return get_output(assigned_time_list)
+
     for analysts in range(1, role_ids_count["analyst"]):
         for devs in range(1, role_ids_count["developer"]):
             for testers in range(1, role_ids_count["tester"]):
                 ans, assigned_time_list = run_simulated_annealing(duration, price, resource, analysts, devs, testers)
 
     return get_output(assigned_time_list)
-
-
-if __name__ == "__main__":
-    role_ids_count = count_role_ids(data_lists.get("resources"))
-    print(role_ids_count)
-    print(run_simulated_annealing(1, 0, 0, 1, 2, 3), "running")

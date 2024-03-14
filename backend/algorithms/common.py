@@ -38,7 +38,7 @@ def init(init_data: dict):
                 default_calendar[date] = 0
 
 
-def get_output(tasks: list[dict], dep):
+def get_output(tasks: list[dict], dep=None):
     tasks = {task["id"]: task for task in tasks}
 
     def change_tasks(tasks_list: list) -> (datetime, datetime):
@@ -101,18 +101,18 @@ def get_output(tasks: list[dict], dep):
 
     result["assignments"]["rows"] = assignments
 
-    res_dep = []
-    for f, t in dep.items():
-        for c in t:
-            res_dep.append(
-                {
-                    "from": f,
-                    "fromId": f,
-                    "to": c,
-                    "toId": c,
-                }
-            )
-
-    result["dependencies"]["rows"] = res_dep
+    # res_dep = []
+    # for f, t in dep.items():
+    #     for c in t:
+    #         res_dep.append(
+    #             {
+    #                 "from": f,
+    #                 "fromId": f,
+    #                 "to": c,
+    #                 "toId": c,
+    #             }
+    #         )
+    #
+    # result["dependencies"]["rows"] = res_dep
 
     return result
