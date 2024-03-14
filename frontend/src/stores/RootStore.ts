@@ -55,7 +55,7 @@ export class RootStore {
                 mappedTasks.push({
                     id: task.id,
                     type: 'project',
-                    name: task.name,
+                    name: task.name + ` id: ${task.id}`,
                     start: new Date(task.startDate),
                     end: new Date(task.endDate),
                     progress: task.percentDone,
@@ -70,7 +70,7 @@ export class RootStore {
                 mappedTasks.push({
                     id: task.id,
                     type: 'task',
-                    name: task.name,
+                    name: task.name + `; id: ${task.id}`,
                     start: new Date(task.startDate),
                     end: new Date(task.endDate),
                     progress: task.percentDone,
