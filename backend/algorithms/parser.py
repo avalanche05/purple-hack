@@ -41,9 +41,12 @@ def get_data(d, is_dict=True) -> dict | list:
 
     data = deepcopy(d)
     for task in get_tasks(data["tasks"]["rows"], is_task, task_tree):
+        effort = task["effort"]
+        if "d" in task["effortUnit"].lower() or "day" in task["effortUnit"].lower():
+            effort *= 8
         tasks[task["id"]] = {
             "id": task["id"],
-            "effort": task["effort"],
+            "effort": effort,
             "project_role_id": None,
         }
 
